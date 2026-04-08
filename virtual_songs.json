@@ -1,0 +1,27 @@
+{
+  "vs_test_virtual_song_20251209": {
+    "ideal_id": "vs_test_virtual_song_20251209",
+    "title": "test virtual song",
+    "the_ideal": {
+      "genesis": {
+        "year_written": 1985,
+        "themes": [
+          "love",
+          "honesty"
+        ],
+        "lyrics": ""
+      },
+      "compositional_rating": {
+        "melody": 8,
+        "harmony": 8,
+        "lyrics": 8,
+        "structure": 8,
+        "aggregate": 8.0
+      }
+    },
+    "manifestations": [],
+    "living_archive_chapters": [],
+    "strategic_positioning": {},
+    "created": "2025-12-09 09:16:13"
+  }
+}
