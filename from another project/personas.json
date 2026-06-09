@@ -1,0 +1,146 @@
+{
+  "meridian-quartet": {
+    "persona_id": "meridian-quartet",
+    "name": "The Meridian Quartet",
+    "type": "jazz_ensemble",
+    "brand_identity": {
+      "visual_style": "Noir sophistication",
+      "color_palette": [
+        "Deep Blue",
+        "Gold Accent",
+        "Cream"
+      ],
+      "typography": "Serif Elegant"
+    },
+    "musical_identity": {
+      "genre": "Jazz",
+      "instrumentation": [
+        "Piano",
+        "Upright Bass",
+        "Drums",
+        "Saxophone"
+      ],
+      "arrangement_style": "Sophisticated swing",
+      "tempo_preference": "Moderate to slow",
+      "dynamic_range": "Subtle dynamics"
+    },
+    "narrative": "Late-night sophistication, urbane reflection",
+    "target_demographic": "40-65, jazz aficionados, NPR listeners",
+    "tracks_performed": [],
+    "created": "2025-11-30",
+    "active": true
+  },
+  "lumen-vox": {
+    "persona_id": "lumen-vox",
+    "name": "Lumen Vox",
+    "type": "female_vocalist",
+    "brand_identity": {
+      "visual_style": "Ethereal intimate",
+      "color_palette": [
+        "Soft Pink",
+        "White",
+        "Silver"
+      ],
+      "typography": "Sans-serif minimal"
+    },
+    "musical_identity": {
+      "genre": "Acoustic Folk",
+      "instrumentation": [
+        "Acoustic Guitar",
+        "Subtle Strings",
+        "Female Vocal"
+      ],
+      "arrangement_style": "Minimalist intimate",
+      "tempo_preference": "Slow to moderate",
+      "dynamic_range": "Quiet to medium"
+    },
+    "narrative": "Vulnerable confessional, bedroom intimacy",
+    "target_demographic": "25-40 female, Phoebe Bridgers fans, introspective listeners",
+    "tracks_performed": [],
+    "created": "2025-11-30",
+    "active": true
+  },
+  "of-broken-light": {
+    "persona_id": "of-broken-light",
+    "name": "Of Broken Light",
+    "type": "live_band",
+    "brand_identity": {
+      "visual_style": "Raw alternative rock",
+      "color_palette": [
+        "Black",
+        "White",
+        "Red Accent"
+      ],
+      "typography": "Bold sans-serif"
+    },
+    "musical_identity": {
+      "genre": "Alternative Rock",
+      "instrumentation": [
+        "Electric Guitar",
+        "Bass",
+        "Drums",
+        "Vocals"
+      ],
+      "arrangement_style": "Full band electric",
+      "tempo_preference": "Moderate to fast",
+      "dynamic_range": "Medium to loud"
+    },
+    "narrative": "Raw emotional intensity, authentic rock energy",
+    "target_demographic": "30-55 rock fans, alternative music lovers",
+    "band_members": [
+      {
+        "name": "Jim Gannaway",
+        "role": "Vocals/Guitar",
+        "status": "Founding"
+      },
+      {
+        "name": "TBD",
+        "role": "Lead Guitar",
+        "status": "Recruiting"
+      },
+      {
+        "name": "TBD",
+        "role": "Bass",
+        "status": "Recruiting"
+      },
+      {
+        "name": "TBD",
+        "role": "Drums",
+        "status": "Recruiting"
+      }
+    ],
+    "tracks_performed": [],
+    "created": "2025-11-30",
+    "active": true
+  },
+  "neon-room": {
+    "persona_id": "neon-room",
+    "name": "Neon Room",
+    "type": "synth_pop",
+    "brand_identity": {
+      "visual_style": "Retro-futuristic pop",
+      "color_palette": [
+        "Neon Pink",
+        "Electric Blue",
+        "Purple"
+      ],
+      "typography": "Geometric modern"
+    },
+    "musical_identity": {
+      "genre": "Synth Pop / Electronic",
+      "instrumentation": [
+        "Synthesizers",
+        "Drum Machine",
+        "Processed Vocals"
+      ],
+      "arrangement_style": "Layered electronic",
+      "tempo_preference": "Moderate to fast",
+      "dynamic_range": "Consistent electronic"
+    },
+    "narrative": "Nostalgia meets future, catchy electronic hooks",
+    "target_demographic": "18-35, electronic music fans, playlist listeners",
+    "tracks_performed": [],
+    "created": "2025-11-30",
+    "active": true
+  }
+}

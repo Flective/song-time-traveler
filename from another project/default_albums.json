@@ -1,0 +1,38 @@
+{
+  "Writer's Recommended": {
+    "description": "Jim's curated journey through the album",
+    "priority": "score_desc"
+  },
+  "Community Pantheon": {
+    "description": "Most-voted versions per song",
+    "priority": "votes_desc"
+  },
+  "All Rock": {
+    "description": "High-energy electric interpretations",
+    "filter": "rock"
+  },
+  "All Acoustic": {
+    "description": "Intimate stripped-down versions",
+    "filter": "acoustic"
+  },
+  "All Jazz": {
+    "description": "Complex sophisticated interpretations",
+    "filter": "jazz"
+  },
+  "All Electronic": {
+    "description": "Atmospheric modern productions",
+    "filter": "electronic"
+  },
+  "All Instrumentals": {
+    "description": "Pure musical interpretations",
+    "filter": "instrumental"
+  },
+  "Energetic Journey": {
+    "description": "Upbeat driving versions",
+    "filter": "high_energy"
+  },
+  "Contemplative Experience": {
+    "description": "Slow thoughtful interpretations",
+    "filter": "contemplative"
+  }
+}
