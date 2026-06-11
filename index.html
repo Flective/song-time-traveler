@@ -91,7 +91,7 @@ body::before {
 .nav-link:hover { color: var(--bg); background: rgba(247,243,238,0.08); }
 
 .hero {
-  padding: clamp(5rem, 12vw, 9rem) clamp(1.5rem, 5vw, 3.5rem) clamp(3rem, 7vw, 5rem);
+  padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
   max-width: 820px; position: relative;
 }
 .hero-eyebrow {
@@ -357,11 +357,9 @@ body::before {
   position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
   width: 13px; height: 13px; border-radius: 50%; background: var(--bg);
   border: 2px solid var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  pointer-events: none; transition: left 0.1s linear, opacity var(--transition);
-  opacity: 0;
+  pointer-events: none; transition: left 0.1s linear;
+  opacity: 1;
 }
-.player-progress-bar:hover .player-progress-thumb,
-.player-progress-bar.scrubbing .player-progress-thumb { opacity: 1; }
 .player-times { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 0.5rem; color: rgba(247,243,238,0.3); letter-spacing: 0.08em; }
 .player-variant-label { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; flex-shrink: 0; white-space: nowrap; }
 @media (max-width: 540px) { .player-variant-label { display: none; } }
@@ -872,6 +870,23 @@ function singleIndex(song) {
   return i >= 0 ? i : 0;
 }
 
+/* Flat sequence: every arrangement of every song, in order.
+   next/prev and auto-advance walk this list so you step through
+   all of a song's triangulations before moving to the next song. */
+function flatSequence() {
+  const seq = [];
+  SONGS.forEach(s => s.triangulations.forEach((t, pi) => seq.push({ id: s.id, pi })));
+  return seq;
+}
+function stepFlat(dir) {
+  const seq = flatSequence();
+  if (!seq.length) return;
+  let i = seq.findIndex(e => e.id === currentId && e.pi === currentPi);
+  if (i < 0) i = dir > 0 ? -1 : 0;           // nothing playing: next->first, prev->last
+  const e = seq[(i + dir + seq.length) % seq.length];
+  playSong(e.id, e.pi);
+}
+
 /* ── Generative per-rendition artwork ──
    Seeded by song id + rendition key, tinted by the rendition's color.
    Deterministic: same rendition always yields the same image.
@@ -1176,10 +1191,7 @@ function runSim() {
 }
 
 function onEnded() {
-  const idx = SONGS.findIndex(s => s.id === currentId);
-  stopAll();
-  const next = SONGS[(idx + 1) % SONGS.length];
-  if (next) playSong(next.id, singleIndex(next));
+  stepFlat(+1);
 }
 
 function updateProgress(curr, total) {
@@ -1212,18 +1224,8 @@ progressBar.addEventListener('touchstart', e => { scrubbing = true; progressBar.
 document.addEventListener('touchmove', e => { if (scrubbing) seekFromEvent(e.touches[0].clientX); }, {passive:true});
 document.addEventListener('touchend', () => { if (scrubbing) { scrubbing = false; progressBar.classList.remove('scrubbing'); } });
 document.getElementById('btn-play').addEventListener('click', togglePlayPause);
-document.getElementById('btn-next').addEventListener('click', () => {
-  let idx = SONGS.findIndex(s => s.id === currentId);
-  if (idx < 0) idx = -1;
-  const n = SONGS[(idx + 1) % SONGS.length];
-  playSong(n.id, singleIndex(n));
-});
-document.getElementById('btn-prev').addEventListener('click', () => {
-  let idx = SONGS.findIndex(s => s.id === currentId);
-  if (idx < 0) idx = 0;
-  const p = SONGS[(idx - 1 + SONGS.length) % SONGS.length];
-  playSong(p.id, singleIndex(p));
-});
+document.getElementById('btn-next').addEventListener('click', () => stepFlat(+1));
+document.getElementById('btn-prev').addEventListener('click', () => stepFlat(-1));
 
 renderSongs();
 
@@ -1255,7 +1257,6 @@ function toggleAlbum(songId) {
 
 function refreshAlbumUI() {
   const ids = Object.keys(album);
-  document.getElementById('album-count').textContent = ids.length;
   document.getElementById('album-bar').classList.add('show');
   const viewBtn = document.getElementById('album-view-btn');
   const clearBtn = document.getElementById('album-clear-btn');
@@ -1263,7 +1264,7 @@ function refreshAlbumUI() {
   clearBtn.style.display = ids.length ? '' : 'none';
   const label = document.getElementById('album-bar-label-text');
   if (label) label.innerHTML = ids.length
-    ? `Your album · <strong id="album-count">${ids.length}</strong> ${ids.length === 1 ? 'track' : 'tracks'}`
+    ? `Your album · <strong>${ids.length}</strong> ${ids.length === 1 ? 'track' : 'tracks'}`
     : `Build your album — tap <strong>+ Add to my album</strong> on any song`;
   SONGS.forEach(s => {
     const btn = document.getElementById(`add-${s.id}`);
@@ -1318,10 +1319,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal
 
 // Spacebar toggles pause/play (not restart)
 document.addEventListener('keydown', e => {
-  if (e.code === 'Space' && !contactModal.classList.contains('open')) {
+  if ((e.code === 'Space' || e.key === ' ') && !contactModal.classList.contains('open') && !albumModal.classList.contains('open')) {
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
     e.preventDefault();
+    e.stopPropagation();
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
     togglePlayPause();
   }
 });
