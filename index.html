@@ -11,9 +11,9 @@
 <style>
 
 :root {
-  --bg:           #f7f3ee;
+  --bg:           #f4f3f1;
   --bg-elevated:  #ffffff;
-  --bg-subtle:    #f0ebe3;
+  --bg-subtle:    #ecebe8;
   --ink:          #1e1a14;
   --ink-mid:      #4a4338;
   --ink-muted:    #8a7e70;
@@ -761,6 +761,16 @@ document.getElementById('contact-link').addEventListener('click', e => { e.preve
 document.getElementById('modal-close').addEventListener('click', () => contactModal.classList.remove('open'));
 contactModal.addEventListener('click', e => { if (e.target === contactModal) contactModal.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal.classList.remove('open'); });
+
+// Spacebar toggles pause/play (not restart)
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !contactModal.classList.contains('open')) {
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    e.preventDefault();
+    togglePlayPause();
+  }
+});
 </script>
 
 </body>
