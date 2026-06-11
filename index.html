@@ -343,6 +343,38 @@ body::before {
 .song-card:nth-child(3) { animation-delay: 0.21s; }
 .song-card:nth-child(4) { animation-delay: 0.29s; }
 
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(30,26,20,0.55); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; padding: 1.5rem;
+}
+.modal-overlay.open { display: flex; animation: fadeUp 0.25s ease; }
+.modal {
+  background: var(--bg-elevated); border: 1px solid var(--border-mid);
+  max-width: 440px; width: 100%; padding: clamp(2rem, 5vw, 3rem); position: relative;
+  box-shadow: 0 24px 70px rgba(30,26,20,0.3);
+}
+.modal-close {
+  position: absolute; top: 1rem; right: 1.1rem; background: none; border: none;
+  font-size: 1.6rem; line-height: 1; color: var(--ink-muted); cursor: pointer; transition: color var(--transition);
+}
+.modal-close:hover { color: var(--ink); }
+.modal-title {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.1rem);
+  font-weight: 400; color: var(--ink); margin: 0.5rem 0 1rem;
+}
+.modal-body { font-size: 0.95rem; line-height: 1.8; color: var(--ink-mid); margin-bottom: 1.5rem; }
+.modal-cta {
+  display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.8rem;
+  letter-spacing: 0.04em; color: #fff; background: var(--accent);
+  padding: 0.7rem 1.3rem; text-decoration: none; transition: background var(--transition);
+}
+.modal-cta:hover { background: var(--accent-hover); }
+.modal-fine {
+  font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95rem;
+  color: var(--ink-muted); margin-top: 1.25rem;
+}
+
 </style>
 </head>
 <body>
@@ -414,10 +446,10 @@ body::before {
 </section>
 
 <footer class="site-footer">
-  <div class="footer-copy">© 2026 Flective, Inc. · Fiat Musica · James Pauli</div>
+  <div class="footer-copy">© 2026 Fiat Musica · James Pauli</div>
   <div class="footer-links">
     <a class="footer-link" href="https://fiatmusica.com">Fiat Musica</a>
-    <a class="footer-link" href="mailto:jim@flective.com">Contact</a>
+    <a class="footer-link" id="contact-link" href="#">Contact James Pauli</a>
   </div>
 </footer>
 
@@ -440,6 +472,21 @@ body::before {
 </div>
 
 <audio id="audio-el" preload="none"></audio>
+
+<!-- ── CONTACT MODAL ──────────────────────────── -->
+<div class="modal-overlay" id="contact-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+    <div class="section-label">Say Hello</div>
+    <h2 class="modal-title">Get in touch</h2>
+    <p class="modal-body">
+      If a song stayed with you — or you'd like to know when new ones and the first
+      videos arrive — I'd love to hear from you. Write to me directly.
+    </p>
+    <a class="modal-cta" href="mailto:jim@fiatmusica.com?subject=Hello%20from%20a%20listener">jim@fiatmusica.com</a>
+    <p class="modal-fine">— James Pauli</p>
+  </div>
+</div>
 
 <script>
 
@@ -638,6 +685,8 @@ function stopAll() {
     const card = document.getElementById(`card-${currentId}`);
     if (card) {
       card.classList.remove('playing');
+      card.style.removeProperty('--card-tint');
+      card.querySelectorAll('.tri-btn').forEach(b => b.classList.remove('active'));
       const pb = document.getElementById(`play-${currentId}`);
       if (pb) pb.innerHTML = svgPlay();
       const f = document.getElementById(`progf-${currentId}`);
@@ -705,6 +754,13 @@ document.getElementById('btn-prev').addEventListener('click', () => {
 });
 
 renderSongs();
+
+// Contact modal
+const contactModal = document.getElementById('contact-modal');
+document.getElementById('contact-link').addEventListener('click', e => { e.preventDefault(); contactModal.classList.add('open'); });
+document.getElementById('modal-close').addEventListener('click', () => contactModal.classList.remove('open'));
+contactModal.addEventListener('click', e => { if (e.target === contactModal) contactModal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal.classList.remove('open'); });
 </script>
 
 </body>
