@@ -35,6 +35,7 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 16px; }
+html, body { overflow-x: hidden; width: 100%; max-width: 100%; }
 
 body {
   background: var(--bg);
@@ -380,6 +381,61 @@ body::before {
   color: var(--ink-muted); margin-top: 1.25rem;
 }
 
+/* ── Album builder ── */
+.add-album {
+  font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--ink-muted); background: none; border: none;
+  cursor: pointer; padding: 0; transition: color var(--transition);
+  display: flex; align-items: center; gap: 0.4rem;
+}
+.add-album:hover { color: var(--accent-hover); }
+.add-album .plus { font-size: 0.95rem; line-height: 1; }
+.add-album.added { color: var(--accent-hover); }
+
+.album-bar {
+  position: fixed; bottom: var(--player-h); left: 0; right: 0; z-index: 480;
+  background: var(--bg-elevated); border-top: 1px solid var(--border-mid);
+  box-shadow: 0 -4px 20px rgba(30,26,20,0.08);
+  padding: 0.85rem clamp(1rem, 3vw, 2rem);
+  display: none; align-items: center; gap: 1rem;
+  transform: translateY(100%); transition: transform 0.35s ease;
+}
+.album-bar.show { display: flex; transform: translateY(0); }
+.album-bar-label {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-muted); flex-shrink: 0;
+}
+.album-bar-label strong { color: var(--accent-hover); font-weight: 400; }
+.album-bar-spacer { flex: 1; }
+.album-bar-btn {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em;
+  text-transform: uppercase; padding: 0.55rem 1.1rem; cursor: pointer;
+  border: 1px solid var(--border-mid); background: transparent; color: var(--ink-mid);
+  transition: all var(--transition);
+}
+.album-bar-btn:hover { border-color: var(--accent); color: var(--accent-hover); }
+.album-bar-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.album-bar-btn.primary:hover { background: var(--accent-hover); }
+
+.album-track {
+  display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.album-track:last-child { border-bottom: none; }
+.album-track-num {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-faint);
+  width: 1.5rem; flex-shrink: 0;
+}
+.album-track-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--ink); flex: 1; }
+.album-track-version {
+  font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px;
+  background: var(--bg-subtle); color: var(--ink-mid);
+}
+.album-track-remove { background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.1rem; transition: color var(--transition); }
+.album-track-remove:hover { color: var(--accent-hover); }
+.album-empty { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); padding: 2rem 0; text-align: center; }
+
 </style>
 </head>
 <body>
@@ -493,6 +549,25 @@ body::before {
   </div>
 </div>
 
+<!-- ── ALBUM BAR ──────────────────────────────── -->
+<div class="album-bar" id="album-bar">
+  <div class="album-bar-label">Your album · <strong id="album-count">0</strong> tracks</div>
+  <div class="album-bar-spacer"></div>
+  <button class="album-bar-btn" id="album-view-btn">View album</button>
+  <button class="album-bar-btn" id="album-clear-btn">Clear</button>
+</div>
+
+<!-- ── ALBUM MODAL ────────────────────────────── -->
+<div class="modal-overlay" id="album-modal">
+  <div class="modal" style="max-width:520px;">
+    <button class="modal-close" id="album-modal-close" aria-label="Close">×</button>
+    <div class="section-label">Your Album</div>
+    <h2 class="modal-title">The version you hear</h2>
+    <p class="modal-body">Your chosen rendition of each song — the album as you'd assemble it. Saved on this device.</p>
+    <div id="album-tracklist"></div>
+  </div>
+</div>
+
 <script>
 
 /* ──────────────────────────────────────────────
@@ -509,7 +584,44 @@ const SONGS = [
     id: 'laughing',
     title: 'Laughing In My Ear',
     single: 'smooth',
-    lyrics: '',
+    lyrics: `I left myself so far behind
+I don't know where or when
+I made myself so hard to find
+I don't know who to send
+Maybe a woman, maybe a friend
+Or maybe I need a human being
+On whom I can depend
+Now and then
+
+Instead I'm on this road again, as I
+Wander through the years
+And through my life
+And through the tears
+But I'll survive if I dare
+If I try, if I care
+In my life I'll reappear
+Some day I'll open up my own eyes
+And I'll be there
+
+And when I find myself again
+I wonder who I'll be
+Someone that I used to know
+Or someone new to me
+Maybe I'm too far gone
+Maybe I'm near
+Maybe I missed me all along
+Standing right here
+Laughing in my ear
+
+When I'm out on this road again, and I
+Wander through the years
+And through my life
+And through the tears
+And in my eyes I see fears
+And I see lies everywhere
+But in my life I'll reappear
+Some day, I'll open up my own eyes
+And I'll be there`,
     video: '',
     triangulations: [
       { key: 'deep',       label: 'deep',       file: 'songs/laughing-in-my-ear_a-deep.mp3',       color: 'var(--tri-1)', blurb: 'The low, resonant reading — weight and shadow under every line.' },
@@ -523,7 +635,29 @@ const SONGS = [
     id: 'insteadofwine',
     title: 'Instead of Wine',
     single: 'pop',
-    lyrics: '',
+    lyrics: `The hour is late now, I'm heading home
+I'm thinking of sleep once again, all alone
+Now my memory is dragging me
+Back to think of you
+But I don't know if I still have you to see
+But I do know that you're alone
+And who knows, but you may need me
+
+So why, oh why, oh why
+Do we keep on losing again?
+Bruising our friendship
+Drinking the dregs instead of wine
+
+These sentimental equations
+Sometimes still get the better of me
+But I don't know if this means I'm facing it
+But I do know that you won't
+And who knows, but we may agree
+
+So why, oh why, oh why
+Do we keep on losing again?
+Bruising our friendship
+Drinking the dregs instead of wine`,
     video: '',
     triangulations: [
       { key: 'pop',    label: 'pop',    file: 'songs/instead-of-wine_a-pop.mp3',    color: 'var(--tri-1)', blurb: 'The radio cut — bright, immediate, built to be sung back.' },
@@ -585,6 +719,7 @@ function renderSongs() {
 
           <div class="song-tools">
             <button class="tool-toggle" data-panel="video-${s.id}"><span class="chev">›</span> Video</button>
+            <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
           </div>
           <div class="panel" id="video-${s.id}">
             <div class="panel-inner">
@@ -750,15 +885,93 @@ document.getElementById('player-progress-bar').addEventListener('click', e => {
 });
 document.getElementById('btn-play').addEventListener('click', togglePlayPause);
 document.getElementById('btn-next').addEventListener('click', () => {
-  const idx = SONGS.findIndex(s => s.id === currentId);
-  if (idx >= 0 && idx < SONGS.length - 1) { const n = SONGS[idx + 1]; playSong(n.id, singleIndex(n)); }
+  let idx = SONGS.findIndex(s => s.id === currentId);
+  if (idx < 0) idx = -1;
+  const n = SONGS[(idx + 1) % SONGS.length];
+  playSong(n.id, singleIndex(n));
 });
 document.getElementById('btn-prev').addEventListener('click', () => {
-  const idx = SONGS.findIndex(s => s.id === currentId);
-  if (idx > 0) { const p = SONGS[idx - 1]; playSong(p.id, singleIndex(p)); }
+  let idx = SONGS.findIndex(s => s.id === currentId);
+  if (idx < 0) idx = 0;
+  const p = SONGS[(idx - 1 + SONGS.length) % SONGS.length];
+  playSong(p.id, singleIndex(p));
 });
 
 renderSongs();
+
+/* ──────────────────────────────────────────────
+   ALBUM BUILDER (localStorage, on-device)
+   album = { songId: triangulationKey }
+   ────────────────────────────────────────────── */
+const ALBUM_KEY = 'fiatmusica_album_v1';
+let album = {};
+try { album = JSON.parse(localStorage.getItem(ALBUM_KEY)) || {}; } catch(e) { album = {}; }
+
+function saveAlbum() {
+  try { localStorage.setItem(ALBUM_KEY, JSON.stringify(album)); } catch(e) {}
+}
+
+function currentChoiceFor(songId) {
+  // the rendition currently playing for this song, else its single
+  const song = SONGS.find(s => s.id === songId);
+  if (currentId === songId) return song.triangulations[currentPi].key;
+  return song.single;
+}
+
+function toggleAlbum(songId) {
+  if (album[songId]) { delete album[songId]; }
+  else { album[songId] = currentChoiceFor(songId); }
+  saveAlbum();
+  refreshAlbumUI();
+}
+
+function refreshAlbumUI() {
+  const ids = Object.keys(album);
+  document.getElementById('album-count').textContent = ids.length;
+  document.getElementById('album-bar').classList.toggle('show', ids.length > 0);
+  SONGS.forEach(s => {
+    const btn = document.getElementById(`add-${s.id}`);
+    if (!btn) return;
+    const inAlbum = !!album[s.id];
+    btn.classList.toggle('added', inAlbum);
+    btn.querySelector('.plus').textContent = inAlbum ? '✓' : '+';
+    btn.querySelector('.add-label').textContent = inAlbum
+      ? `In album (${album[s.id]})`
+      : 'Add to my album';
+  });
+}
+
+function renderTracklist() {
+  const wrap = document.getElementById('album-tracklist');
+  const ids = Object.keys(album);
+  if (!ids.length) { wrap.innerHTML = '<div class="album-empty">No tracks yet — add songs from the list.</div>'; return; }
+  wrap.innerHTML = SONGS.filter(s => album[s.id]).map((s, i) => `
+    <div class="album-track">
+      <span class="album-track-num">${String(i+1).padStart(2,'0')}</span>
+      <span class="album-track-title">${s.title}</span>
+      <span class="album-track-version">${album[s.id]}</span>
+      <button class="album-track-remove" data-song="${s.id}" title="Remove">×</button>
+    </div>`).join('');
+  wrap.querySelectorAll('.album-track-remove').forEach(b => {
+    b.addEventListener('click', () => { delete album[b.dataset.song]; saveAlbum(); refreshAlbumUI(); renderTracklist(); });
+  });
+}
+
+// wire add buttons
+SONGS.forEach(s => {
+  const btn = document.getElementById(`add-${s.id}`);
+  if (btn) btn.addEventListener('click', () => toggleAlbum(s.id));
+});
+
+// album bar buttons
+const albumModal = document.getElementById('album-modal');
+document.getElementById('album-view-btn').addEventListener('click', () => { renderTracklist(); albumModal.classList.add('open'); });
+document.getElementById('album-clear-btn').addEventListener('click', () => { album = {}; saveAlbum(); refreshAlbumUI(); });
+document.getElementById('album-modal-close').addEventListener('click', () => albumModal.classList.remove('open'));
+albumModal.addEventListener('click', e => { if (e.target === albumModal) albumModal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') albumModal.classList.remove('open'); });
+
+refreshAlbumUI();
 
 // Contact modal
 const contactModal = document.getElementById('contact-modal');
