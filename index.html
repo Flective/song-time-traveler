@@ -144,8 +144,22 @@ body::before {
 }
 .song-card.playing::before { background: var(--card-tint, var(--accent)); }
 
-.song-inner { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); }
-@media (max-width: 760px) { .song-inner { grid-template-columns: 1fr; } }
+.song-inner { display: grid; grid-template-columns: auto 1.4fr 1fr; gap: clamp(1.25rem, 3vw, 2.25rem); align-items: start; }
+@media (max-width: 900px) { .song-inner { grid-template-columns: auto 1fr; } .song-inner .lyrics-box { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .song-inner { grid-template-columns: 1fr; } .song-inner .song-art { width: 100%; max-width: 220px; } }
+
+.song-art {
+  width: 130px; height: 130px; border-radius: 14px; overflow: hidden;
+  flex-shrink: 0; position: relative; border: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(30,26,20,0.12);
+}
+.song-art canvas, .song-art img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.song-art .art-badge {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  font-family: 'DM Mono', monospace; font-size: 0.5rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #fff; text-align: center; padding: 0.3rem;
+  background: linear-gradient(transparent, rgba(0,0,0,0.45));
+}
 
 .song-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem; margin-bottom: 1.25rem; }
 .song-titleblock { flex: 1; min-width: 0; }
@@ -481,7 +495,7 @@ body::before {
   <nav class="site-nav">
     <a class="nav-link" href="#songs">The Songs</a>
     <a class="nav-link" href="#idea">The Idea</a>
-    <a class="nav-link" href="#about">About</a>
+    <a class="nav-link" href="about.html">About</a>
   </nav>
 </header>
 
@@ -534,19 +548,7 @@ body::before {
   </div>
 </section>
 
-<section class="about" id="about">
-  <div class="section-label">About</div>
-  <h2>Written by hand, across decades.</h2>
-  <p>
-    Words and music by <strong>James Pauli</strong>, working in the American popular tradition.
-    Many of these songs waited years — on cassette, in notebooks — before finding the productions
-    they were always reaching toward.
-  </p>
-  <p>
-    Each rendering carries a <strong>vocal guide track by James Pauli, modified by AI</strong>, under
-    his direction at every step. More songs, more triangulations, and the first music videos are on their way.
-  </p>
-</section>
+<!-- ── ABOUT moved to about.html ── -->
 
 <footer class="site-footer">
   <div class="footer-copy">© 2026 Fiat Musica · James Pauli</div>
@@ -734,7 +736,7 @@ I hope we don't pretend to because that is no use`,
   },
   {
     id: 'fences',
-    title: 'Fences On Your Side',
+    title: 'The Fences On Your Side',
     single: 'baleful',
     lyrics: `One by one I discover the fences on your side
 One by one I discover the fences on your side
@@ -870,6 +872,68 @@ function singleIndex(song) {
   return i >= 0 ? i : 0;
 }
 
+/* ── Generative per-rendition artwork ──
+   Seeded by song id + rendition key, tinted by the rendition's color.
+   Deterministic: same rendition always yields the same image.
+   When real art exists later, swap the canvas for an <img>. */
+function hashStr(str) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function resolveColor(cssVar) {
+  const probe = document.createElement('span');
+  probe.style.color = cssVar; probe.style.display = 'none';
+  document.body.appendChild(probe);
+  const c = getComputedStyle(probe).color; probe.remove();
+  return c;
+}
+function drawArt(songId, tri) {
+  const canvas = document.getElementById(`artcanvas-${songId}`);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const seed = hashStr(songId + ':' + tri.key);
+  const rnd = mulberry32(seed);
+  const base = resolveColor(tri.color);
+  // parse rgb
+  const m = base.match(/\d+/g) || [180,134,11];
+  const [r,g,b] = m.map(Number);
+  // background gradient
+  const ang = rnd() * Math.PI * 2;
+  const gx = Math.cos(ang), gy = Math.sin(ang);
+  const grad = ctx.createLinearGradient(W/2 - gx*W/2, H/2 - gy*H/2, W/2 + gx*W/2, H/2 + gy*H/2);
+  grad.addColorStop(0, `rgb(${Math.min(r+40,255)},${Math.min(g+40,255)},${Math.min(b+40,255)})`);
+  grad.addColorStop(1, `rgb(${Math.max(r-50,0)},${Math.max(g-50,0)},${Math.max(b-50,0)})`);
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+  // soft blobs
+  const blobs = 4 + Math.floor(rnd()*4);
+  for (let i=0;i<blobs;i++){
+    const cx = rnd()*W, cy = rnd()*H, rad = (0.18+rnd()*0.4)*W;
+    const rg = ctx.createRadialGradient(cx,cy,0,cx,cy,rad);
+    const light = rnd() > 0.5;
+    const cc = light ? '255,255,255' : '0,0,0';
+    rg.addColorStop(0, `rgba(${cc},${0.12+rnd()*0.18})`);
+    rg.addColorStop(1, `rgba(${cc},0)`);
+    ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.fill();
+  }
+  // thin geometric lines for signature
+  ctx.globalAlpha = 0.18; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
+  const lines = 2 + Math.floor(rnd()*4);
+  for (let i=0;i<lines;i++){
+    ctx.beginPath(); ctx.moveTo(rnd()*W, rnd()*H); ctx.lineTo(rnd()*W, rnd()*H); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
 function renderSongs() {
   const grid = document.getElementById('song-grid');
   grid.innerHTML = '';
@@ -887,39 +951,60 @@ function renderSongs() {
     if (count === 1) {
       card.classList.add('single-only');
       card.innerHTML = `
-        <div class="single-row">
-          <button class="song-play" id="play-${s.id}" title="Play">${svgPlay()}</button>
-          <div class="single-titleblock">
-            <div class="single-title">${s.title}</div>
-            <div class="single-sub">James Pauli · single — more renderings coming</div>
+        <div class="song-inner">
+          <div class="song-art" id="art-${s.id}">
+            <canvas width="260" height="260" id="artcanvas-${s.id}"></canvas>
+            <div class="art-badge" id="artbadge-${s.id}">${s.triangulations[0].label}</div>
           </div>
-          <div class="single-actions">
-            ${hasLyrics ? `<button class="single-lyrics-toggle" data-panel="slyr-${s.id}">Lyrics</button>` : ''}
-            <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
+          <div class="song-left">
+            <div class="single-row">
+              <button class="song-play" id="play-${s.id}" title="Play">${svgPlay()}</button>
+              <div class="single-titleblock">
+                <div class="single-title">${s.title}</div>
+                <div class="single-sub">James Pauli · single — more renderings coming</div>
+              </div>
+            </div>
+            <div class="single-actions" style="margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--border);">
+              <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
+            </div>
+          </div>
+          <div class="lyrics-box">
+            <div class="lyrics-head">Lyrics</div>
+            ${hasLyrics
+              ? `<div class="lyrics-clip" id="lyr-${s.id}">
+                   <div class="lyrics-text"><strong style="display:block; font-style:normal; font-size:1.05rem; margin-bottom:0.6rem; color:var(--ink);">${s.title}</strong>${s.lyrics}</div>
+                   <div class="lyrics-fade"></div>
+                 </div>
+                 <div class="lyrics-more" id="lyrmore-${s.id}">Tap to read all →</div>`
+              : `<div class="lyrics-empty">Lyrics coming soon</div>`}
           </div>
         </div>
-        ${hasLyrics ? `
-        <div class="panel" id="slyr-${s.id}">
-          <div class="panel-inner"><div class="lyrics-text" style="max-height:none;">${s.lyrics}</div></div>
-        </div>` : ''}
       `;
       card.querySelector(`#play-${s.id}`).addEventListener('click', () => {
         if (currentId === s.id) togglePlayPause(); else playSong(s.id, 0);
       });
       if (hasLyrics) {
-        const t = card.querySelector('.single-lyrics-toggle');
-        t.addEventListener('click', () => {
-          const p = document.getElementById(`slyr-${s.id}`);
-          p.classList.toggle('open');
-        });
+        const clip = card.querySelector(`#lyr-${s.id}`);
+        const more = card.querySelector(`#lyrmore-${s.id}`);
+        const toggle = () => {
+          const ex = clip.classList.toggle('expanded');
+          more.textContent = ex ? '↑ Show less' : 'Tap to read all →';
+        };
+        clip.addEventListener('click', toggle);
+        more.addEventListener('click', toggle);
       }
       grid.appendChild(card);
+      drawArt(s.id, s.triangulations[0]);
       return;
     }
 
     // ── Full card for triangulated songs ──
     card.innerHTML = `
       <div class="song-inner">
+        <div class="song-art" id="art-${s.id}">
+          <canvas width="260" height="260" id="artcanvas-${s.id}"></canvas>
+          <div class="art-badge" id="artbadge-${s.id}">${s.triangulations[si].label}</div>
+        </div>
         <div class="song-left">
           <div class="song-head">
             <div class="song-titleblock">
@@ -956,10 +1041,10 @@ function renderSongs() {
         </div>
 
         <div class="lyrics-box">
-          <div class="lyrics-head">Lyrics · ${s.title}</div>
+          <div class="lyrics-head">Lyrics</div>
           ${hasLyrics
             ? `<div class="lyrics-clip" id="lyr-${s.id}">
-                 <div class="lyrics-text">${s.lyrics}</div>
+                 <div class="lyrics-text"><strong style="display:block; font-style:normal; font-size:1.05rem; margin-bottom:0.6rem; color:var(--ink);">${s.title}</strong>${s.lyrics}</div>
                  <div class="lyrics-fade"></div>
                </div>
                <div class="lyrics-more" id="lyrmore-${s.id}">Tap to read all →</div>`
@@ -1008,6 +1093,7 @@ function renderSongs() {
     }
 
     grid.appendChild(card);
+    drawArt(s.id, s.triangulations[si]);
   });
 }
 
@@ -1039,6 +1125,9 @@ function playSong(id, pi = 0) {
     card.querySelectorAll('.tri-btn').forEach((b, i) => b.classList.toggle('active', i === pi));
     const blurbEl = document.getElementById(`blurb-${id}`);
     if (blurbEl) blurbEl.textContent = tri.blurb;
+    drawArt(id, tri);
+    const badge = document.getElementById(`artbadge-${id}`);
+    if (badge) badge.textContent = tri.label;
   }
 
   audioEl.src = tri.file || '';
@@ -1089,7 +1178,8 @@ function runSim() {
 function onEnded() {
   const idx = SONGS.findIndex(s => s.id === currentId);
   stopAll();
-  if (idx < SONGS.length - 1) { const next = SONGS[idx + 1]; playSong(next.id, singleIndex(next)); }
+  const next = SONGS[(idx + 1) % SONGS.length];
+  if (next) playSong(next.id, singleIndex(next));
 }
 
 function updateProgress(curr, total) {
