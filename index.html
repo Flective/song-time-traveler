@@ -251,21 +251,21 @@ body::before {
   text-transform: uppercase; color: var(--ink-muted); margin-bottom: 0.6rem;
 }
 .lyrics-clip {
-  position: relative; background: var(--bg-subtle); border: 1px solid var(--border);
+  position: relative; background: var(--bg-elevated); border: 1px solid var(--border-mid);
   padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color var(--transition);
-  flex: 1; min-height: 150px;
+  flex: 1; min-height: 150px; box-shadow: var(--shadow-sm);
 }
 .lyrics-clip:hover { border-color: var(--accent); }
+.lyrics-fade {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 3.5em;
+  background: linear-gradient(transparent, var(--bg-elevated)); pointer-events: none; transition: opacity var(--transition);
+}
 .lyrics-text {
   font-family: 'Playfair Display', serif; font-size: 0.98rem; line-height: 1.85;
   color: var(--ink-mid); white-space: pre-line; overflow: hidden;
   max-height: 11em; transition: max-height 0.45s ease;
 }
 .lyrics-clip.expanded .lyrics-text { max-height: 2000px; }
-.lyrics-fade {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 3.5em;
-  background: linear-gradient(transparent, var(--bg-subtle)); pointer-events: none; transition: opacity var(--transition);
-}
 .lyrics-clip.expanded .lyrics-fade { opacity: 0; }
 .lyrics-more {
   font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.16em;
@@ -964,7 +964,7 @@ function renderSongs() {
                 <div class="single-sub">James Pauli · single — more renderings coming</div>
               </div>
             </div>
-            <div class="single-actions" style="margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--border);">
+            <div class="single-actions" style="margin-top:1.1rem;">
               <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
             </div>
           </div>
