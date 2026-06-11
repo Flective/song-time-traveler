@@ -261,7 +261,7 @@ body::before {
   background: linear-gradient(transparent, var(--bg-elevated)); pointer-events: none; transition: opacity var(--transition);
 }
 .lyrics-text {
-  font-family: 'Playfair Display', serif; font-size: 0.98rem; line-height: 1.85;
+  font-family: 'DM Sans', sans-serif; font-size: 0.98rem; line-height: 1.4;
   color: var(--ink-mid); white-space: pre-line; overflow: hidden;
   max-height: 11em; transition: max-height 0.45s ease;
 }
@@ -1260,7 +1260,7 @@ function refreshAlbumUI() {
   document.getElementById('album-bar').classList.add('show');
   const viewBtn = document.getElementById('album-view-btn');
   const clearBtn = document.getElementById('album-clear-btn');
-  viewBtn.style.display = ids.length ? '' : 'none';
+  viewBtn.style.display = '';
   clearBtn.style.display = ids.length ? '' : 'none';
   const label = document.getElementById('album-bar-label-text');
   if (label) label.innerHTML = ids.length
