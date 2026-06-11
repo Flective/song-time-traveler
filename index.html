@@ -511,12 +511,6 @@ body::before {
 <section class="songs-intro" id="songs">
   <div class="section-label">The Songs</div>
   <h2>Start with the single — then move around the song.</h2>
-  <p style="font-family:'DM Sans',sans-serif; font-size:0.98rem; line-height:1.8; color:var(--ink-mid); margin-top:1rem; max-width:640px;">
-    And make it yours: as you find the rendering of each song you love most, tap
-    <strong style="color:var(--accent-hover); font-weight:500;">+ Add to my album</strong>.
-    Your picks collect in a bar at the bottom of the screen — tap <strong style="color:var(--accent-hover); font-weight:500;">View album</strong>
-    any time to see the version <em>you</em> chose for each song. It is saved on this device as you listen.
-  </p>
 </section>
 
 <div class="songs" id="song-grid"></div>
@@ -591,24 +585,7 @@ body::before {
   </div>
 </div>
 
-<!-- ── ALBUM BAR ──────────────────────────────── -->
-<div class="album-bar" id="album-bar">
-  <div class="album-bar-label" id="album-bar-label-text">Build your album — tap <strong>+ Add to my album</strong> on any song</div>
-  <div class="album-bar-spacer"></div>
-  <button class="album-bar-btn" id="album-view-btn">View album</button>
-  <button class="album-bar-btn" id="album-clear-btn">Clear</button>
-</div>
-
-<!-- ── ALBUM MODAL ────────────────────────────── -->
-<div class="modal-overlay" id="album-modal">
-  <div class="modal" style="max-width:520px;">
-    <button class="modal-close" id="album-modal-close" aria-label="Close">×</button>
-    <div class="section-label">Your Album</div>
-    <h2 class="modal-title">The version you hear</h2>
-    <p class="modal-body">Your chosen rendition of each song — the album as you'd assemble it. Saved on this device.</p>
-    <div id="album-tracklist"></div>
-  </div>
-</div>
+<!-- ── ALBUM REMOVED — playable album lives on play.fiatmusica ── -->
 
 <script>
 
@@ -979,9 +956,6 @@ function renderSongs() {
                 <div class="single-sub">James Pauli · single — more renderings coming</div>
               </div>
             </div>
-            <div class="single-actions" style="margin-top:1.1rem;">
-              <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
-            </div>
           </div>
           <div class="lyrics-box">
             <div class="lyrics-head">Lyrics</div>
@@ -1044,7 +1018,6 @@ function renderSongs() {
 
           <div class="song-tools">
             <button class="tool-toggle" data-panel="video-${s.id}"><span class="chev">›</span> Video</button>
-            <button class="add-album" id="add-${s.id}" data-song="${s.id}"><span class="plus">+</span> <span class="add-label">Add to my album</span></button>
           </div>
           <div class="panel" id="video-${s.id}">
             <div class="panel-inner">
@@ -1229,87 +1202,6 @@ document.getElementById('btn-prev').addEventListener('click', () => stepFlat(-1)
 
 renderSongs();
 
-/* ──────────────────────────────────────────────
-   ALBUM BUILDER (localStorage, on-device)
-   album = { songId: triangulationKey }
-   ────────────────────────────────────────────── */
-const ALBUM_KEY = 'fiatmusica_album_v1';
-let album = {};
-try { album = JSON.parse(localStorage.getItem(ALBUM_KEY)) || {}; } catch(e) { album = {}; }
-
-function saveAlbum() {
-  try { localStorage.setItem(ALBUM_KEY, JSON.stringify(album)); } catch(e) {}
-}
-
-function currentChoiceFor(songId) {
-  // the rendition currently playing for this song, else its single
-  const song = SONGS.find(s => s.id === songId);
-  if (currentId === songId) return song.triangulations[currentPi].key;
-  return song.single;
-}
-
-function toggleAlbum(songId) {
-  if (album[songId]) { delete album[songId]; }
-  else { album[songId] = currentChoiceFor(songId); }
-  saveAlbum();
-  refreshAlbumUI();
-}
-
-function refreshAlbumUI() {
-  const ids = Object.keys(album);
-  document.getElementById('album-bar').classList.add('show');
-  const viewBtn = document.getElementById('album-view-btn');
-  const clearBtn = document.getElementById('album-clear-btn');
-  viewBtn.style.display = '';
-  clearBtn.style.display = ids.length ? '' : 'none';
-  const label = document.getElementById('album-bar-label-text');
-  if (label) label.innerHTML = ids.length
-    ? `Your album · <strong>${ids.length}</strong> ${ids.length === 1 ? 'track' : 'tracks'}`
-    : `Build your album — tap <strong>+ Add to my album</strong> on any song`;
-  SONGS.forEach(s => {
-    const btn = document.getElementById(`add-${s.id}`);
-    if (!btn) return;
-    const inAlbum = !!album[s.id];
-    btn.classList.toggle('added', inAlbum);
-    btn.querySelector('.plus').textContent = inAlbum ? '✓' : '+';
-    btn.querySelector('.add-label').textContent = inAlbum
-      ? `In album (${album[s.id]})`
-      : 'Add to my album';
-  });
-}
-
-function renderTracklist() {
-  const wrap = document.getElementById('album-tracklist');
-  const ids = Object.keys(album);
-  if (!ids.length) { wrap.innerHTML = '<div class="album-empty">No tracks yet — add songs from the list.</div>'; return; }
-  wrap.innerHTML = SONGS.filter(s => album[s.id]).map((s, i) => `
-    <div class="album-track">
-      <span class="album-track-num">${String(i+1).padStart(2,'0')}</span>
-      <span class="album-track-title">${s.title}</span>
-      <span class="album-track-version">${album[s.id]}</span>
-      <button class="album-track-remove" data-song="${s.id}" title="Remove">×</button>
-    </div>`).join('');
-  wrap.querySelectorAll('.album-track-remove').forEach(b => {
-    b.addEventListener('click', () => { delete album[b.dataset.song]; saveAlbum(); refreshAlbumUI(); renderTracklist(); });
-  });
-}
-
-// wire add buttons
-SONGS.forEach(s => {
-  const btn = document.getElementById(`add-${s.id}`);
-  if (btn) btn.addEventListener('click', () => toggleAlbum(s.id));
-});
-
-// album bar buttons
-const albumModal = document.getElementById('album-modal');
-document.getElementById('album-view-btn').addEventListener('click', () => { renderTracklist(); albumModal.classList.add('open'); });
-document.getElementById('album-clear-btn').addEventListener('click', () => { album = {}; saveAlbum(); refreshAlbumUI(); });
-document.getElementById('album-modal-close').addEventListener('click', () => albumModal.classList.remove('open'));
-albumModal.addEventListener('click', e => { if (e.target === albumModal) albumModal.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') albumModal.classList.remove('open'); });
-
-refreshAlbumUI();
-
 // Contact modal
 const contactModal = document.getElementById('contact-modal');
 document.getElementById('contact-link').addEventListener('click', e => { e.preventDefault(); contactModal.classList.add('open'); });
@@ -1319,7 +1211,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal
 
 // Spacebar toggles pause/play (not restart)
 document.addEventListener('keydown', e => {
-  if ((e.code === 'Space' || e.key === ' ') && !contactModal.classList.contains('open') && !albumModal.classList.contains('open')) {
+  if ((e.code === 'Space' || e.key === ' ') && !contactModal.classList.contains('open')) {
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
     e.preventDefault();
