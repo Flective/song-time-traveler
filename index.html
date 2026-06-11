@@ -132,7 +132,11 @@ body::before {
   background: var(--accent); transform: scaleY(0); transform-origin: bottom; transition: transform 0.35s ease;
 }
 .song-card.playing::before { transform: scaleY(1); }
-.song-card.playing { background: var(--accent-pale); }
+.song-card.playing {
+  background: color-mix(in srgb, var(--card-tint, var(--accent)) 14%, var(--bg-elevated));
+  transition: background 0.5s ease;
+}
+.song-card.playing::before { background: var(--card-tint, var(--accent)); }
 
 .song-inner { display: grid; grid-template-columns: 1.4fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); }
 @media (max-width: 760px) { .song-inner { grid-template-columns: 1fr; } }
@@ -609,6 +613,14 @@ function playSong(id, pi = 0) {
 
   const card = document.getElementById(`card-${id}`);
   if (card) {
+    // resolve the rendition's CSS var color to an actual value, then tint the card
+    const probe = document.createElement('span');
+    probe.style.color = tri.color;
+    document.body.appendChild(probe);
+    const resolved = getComputedStyle(probe).color;
+    probe.remove();
+    card.style.setProperty('--card-tint', resolved);
+
     card.classList.add('playing');
     const pb = document.getElementById(`play-${id}`);
     if (pb) pb.innerHTML = svgPause();
