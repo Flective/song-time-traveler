@@ -130,6 +130,51 @@ body::before {
 
 .songs { padding: 0 clamp(1.5rem, 5vw, 3.5rem); display: flex; flex-direction: column; gap: 1.25rem; }
 
+/* View toggle (Cards / List) */
+.view-toggle {
+  display: flex; gap: 0; margin: 0 clamp(1.5rem, 5vw, 3.5rem) 1.25rem; align-self: flex-start;
+  border: 1px solid var(--border-mid); border-radius: 5px; overflow: hidden; width: max-content;
+}
+.view-toggle button {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-muted); background: transparent; border: none;
+  padding: 0.5rem 1rem; cursor: pointer; transition: all var(--transition);
+}
+.view-toggle button:not(:last-child) { border-right: 1px solid var(--border-mid); }
+.view-toggle button.active { background: var(--ink); color: var(--bg); }
+
+/* Compact list view */
+.song-list { padding: 0 clamp(1.5rem, 5vw, 3.5rem); display: none; flex-direction: column; }
+.song-list.show { display: flex; }
+.songs.hidden { display: none; }
+.list-row {
+  display: flex; align-items: center; gap: 1rem; padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--border); cursor: pointer; transition: background var(--transition);
+}
+.list-row:hover { background: var(--bg-subtle); }
+.list-row.playing { background: color-mix(in srgb, var(--accent) 12%, var(--bg-elevated)); }
+.list-thumb {
+  width: 40px; height: 40px; border-radius: 7px; overflow: hidden; flex-shrink: 0;
+  border: 1px solid var(--border); position: relative;
+}
+.list-thumb canvas { width: 100%; height: 100%; display: block; }
+.list-play {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  border: 1.5px solid var(--border-mid); background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: var(--ink-mid); transition: all var(--transition);
+}
+.list-play:hover { border-color: var(--accent); color: var(--accent); }
+.list-row.playing .list-play { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.list-play svg { width: 14px; height: 14px; pointer-events: none; }
+.list-title {
+  font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem;
+  color: var(--ink); flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.list-count {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-muted); flex-shrink: 0;
+}
+
 .song-card {
   background: var(--bg-elevated); border: 1px solid var(--border);
   padding: clamp(1.25rem, 2.5vw, 1.75rem); position: relative; overflow: hidden;
@@ -512,7 +557,13 @@ body::before {
   <h2>Start with the single — then move around the song.</h2>
 </section>
 
+<div class="view-toggle">
+  <button id="view-cards" class="active">Cards</button>
+  <button id="view-list">List</button>
+</div>
+
 <div class="songs" id="song-grid"></div>
+<div class="song-list" id="song-list"></div>
 
 <section class="idea" id="idea">
   <div>
@@ -953,6 +1004,10 @@ function resolveColor(cssVar) {
 function drawArt(songId, tri) {
   const canvas = document.getElementById(`artcanvas-${songId}`);
   if (!canvas) return;
+  drawArtCanvas(canvas, songId, tri);
+}
+function drawArtCanvas(canvas, songId, tri) {
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
   const seed = hashStr(songId + ':' + tri.key);
@@ -1149,6 +1204,45 @@ function wireLyrics(card, id) {
   if (more) more.addEventListener('click', toggle);
 }
 
+/* Compact list view: one row per song */
+function renderList() {
+  const list = document.getElementById('song-list');
+  list.innerHTML = '';
+  SONGS.forEach(s => {
+    const si = singleIndex(s);
+    const count = s.triangulations.length;
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.id = `row-${s.id}`;
+    row.innerHTML = `
+      <button class="list-play" id="rowplay-${s.id}" title="Play">${svgPlay()}</button>
+      <div class="list-thumb"><canvas width="120" height="120" id="rowart-${s.id}"></canvas></div>
+      <div class="list-title">${s.title}</div>
+      <div class="list-count">${count === 1 ? 'single' : `1 + ${count - 1}`}</div>
+    `;
+    const play = () => { if (currentId === s.id) togglePlayPause(); else playSong(s.id, si); };
+    row.querySelector(`#rowplay-${s.id}`).addEventListener('click', e => { e.stopPropagation(); play(); });
+    row.addEventListener('click', play);
+    list.appendChild(row);
+    // draw thumbnail into the row canvas
+    const c = row.querySelector(`#rowart-${s.id}`);
+    if (c) drawArtCanvas(c, s.id, s.triangulations[si]);
+  });
+  syncListPlaying();
+}
+
+function syncListPlaying() {
+  document.querySelectorAll('.list-row').forEach(r => r.classList.remove('playing'));
+  if (currentId) {
+    const r = document.getElementById(`row-${currentId}`);
+    if (r) {
+      r.classList.add('playing');
+      const pb = r.querySelector('.list-play');
+      if (pb) pb.innerHTML = isPlaying ? svgPause() : svgPlay();
+    }
+  }
+}
+
 function playSong(id, pi = 0) {
   const song = SONGS.find(s => s.id === id);
   const tri = song.triangulations[pi];
@@ -1184,6 +1278,7 @@ function playSong(id, pi = 0) {
 
   audioEl.src = tri.file || '';
   if (tri.file) audioEl.play().catch(() => runSim()); else runSim();
+  syncListPlaying();
 }
 
 function stopAll() {
@@ -1213,6 +1308,7 @@ function togglePlayPause() {
     const pb = document.getElementById(`play-${currentId}`); if (pb) pb.innerHTML = svgPause();
   }
   setPlayerIcon(isPlaying);
+  syncListPlaying();
 }
 
 function setPlayerIcon(playing) {
@@ -1265,6 +1361,21 @@ document.getElementById('btn-next').addEventListener('click', () => stepFlat(+1)
 document.getElementById('btn-prev').addEventListener('click', () => stepFlat(-1));
 
 renderSongs();
+renderList();
+
+// Cards / List view toggle
+const grid = document.getElementById('song-grid');
+const listEl = document.getElementById('song-list');
+const btnCards = document.getElementById('view-cards');
+const btnList = document.getElementById('view-list');
+btnCards.addEventListener('click', () => {
+  grid.classList.remove('hidden'); listEl.classList.remove('show');
+  btnCards.classList.add('active'); btnList.classList.remove('active');
+});
+btnList.addEventListener('click', () => {
+  grid.classList.add('hidden'); listEl.classList.add('show');
+  btnList.classList.add('active'); btnCards.classList.remove('active');
+});
 
 // Contact modal
 const contactModal = document.getElementById('contact-modal');
