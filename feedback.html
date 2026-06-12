@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tell Me What You Heard — Fiat Musica</title>
+<meta name="description" content="Sixty seconds of honest reaction to a Fiat Musica song. Real assessment, not encouragement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f3f1; --bg-elevated: #ffffff; --bg-subtle: #ecebe8;
+  --ink: #1e1a14; --ink-mid: #4a4338; --ink-muted: #8a7e70; --ink-faint: #c4b8a8;
+  --accent: #b8860b; --accent-hover: #9a700a;
+  --border: rgba(30,26,20,0.1); --border-mid: rgba(30,26,20,0.18);
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+html, body { overflow-x: hidden; width: 100%; max-width: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif;
+  font-weight: 400; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
+.site-header {
+  position: sticky; top: 0; z-index: 200; background: var(--ink);
+  border-bottom: 2px solid var(--accent); padding: 0 clamp(1.5rem, 5vw, 3.5rem);
+  height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  box-shadow: 0 2px 20px rgba(30,26,20,0.18);
+}
+.wordmark {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 500;
+  font-size: 1.5rem; color: var(--bg); letter-spacing: -0.01em; text-decoration: none;
+  white-space: nowrap; display: inline-flex; align-items: center;
+}
+.wordmark em { font-style: italic; color: var(--accent); font-weight: 500; margin-left: 0.3em; }
+.wordmark span {
+  font-style: normal; font-weight: 400; color: rgba(247,243,238,0.55);
+  font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
+  margin-left: 1rem; padding-left: 1rem; font-family: 'DM Mono', monospace;
+  vertical-align: middle; border-left: 1px solid rgba(247,243,238,0.22);
+}
+.site-nav { display: flex; align-items: center; gap: clamp(0.4rem, 1.5vw, 0.8rem); }
+.nav-link {
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(247,243,238,0.7); text-decoration: none;
+  padding: 0.5rem 0.9rem; border-radius: 4px; transition: all var(--transition);
+}
+.nav-link:hover { color: var(--bg); background: rgba(247,243,238,0.08); }
+.nav-link.current { color: var(--accent); }
+.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.3rem; }
+.nav-link.is-page::after { content: '\2197'; font-size: 0.85em; margin-left: 0.35em; opacity: 0.7; vertical-align: baseline; }
+
+.wrap { max-width: 680px; padding: clamp(3.5rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3.5rem) clamp(4rem, 8vw, 6rem); }
+.eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.eyebrow::after { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); opacity: 0.6; }
+h1 {
+  font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1.25rem;
+}
+h1 em { font-style: italic; color: var(--accent-hover); }
+.lede {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 300;
+  font-size: clamp(1.1rem, 2vw, 1.35rem); line-height: 1.6; color: var(--ink-mid);
+  margin-bottom: 1rem; max-width: 600px;
+}
+.honest-note {
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2.75rem;
+}
+
+.q { margin-bottom: 2.5rem; }
+.q-num {
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.65rem;
+}
+.q-text {
+  font-family: 'Playfair Display', serif; font-size: clamp(1.25rem, 2.5vw, 1.6rem);
+  font-weight: 400; color: var(--ink); line-height: 1.3; margin-bottom: 0.4rem;
+}
+.q-help { font-size: 0.95rem; color: var(--ink-muted); margin-bottom: 1.1rem; line-height: 1.5; }
+
+.opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.opt {
+  display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 1.1rem;
+  border: 1px solid var(--border-mid); background: var(--bg-elevated); cursor: pointer;
+  font-size: 1.02rem; color: var(--ink-mid); transition: all var(--transition); border-radius: 5px;
+}
+.opt:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--bg-elevated)); }
+.opt.selected { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg-elevated)); color: var(--ink); }
+.opt-marker {
+  width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border-mid);
+  flex-shrink: 0; transition: all var(--transition); position: relative;
+}
+.opt.selected .opt-marker { border-color: var(--accent); background: var(--accent); }
+.opt.selected .opt-marker::after {
+  content: ''; position: absolute; inset: 4px; background: #fff; border-radius: 50%;
+}
+
+/* 1-10 scale */
+.scale { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.scale-btn {
+  width: 44px; height: 44px; border: 1px solid var(--border-mid); background: var(--bg-elevated);
+  font-family: 'DM Mono', monospace; font-size: 0.95rem; color: var(--ink-mid); cursor: pointer;
+  border-radius: 5px; transition: all var(--transition);
+}
+.scale-btn:hover { border-color: var(--accent); }
+.scale-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+.scale-ends {
+  display: flex; justify-content: space-between; margin-top: 0.5rem;
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+
+textarea, input[type="text"] {
+  width: 100%; font-family: 'DM Sans', sans-serif; font-size: 1rem; color: var(--ink);
+  background: var(--bg-elevated); border: 1px solid var(--border-mid); border-radius: 5px;
+  padding: 0.85rem 1.1rem; transition: border-color var(--transition); resize: vertical;
+}
+textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--accent); }
+textarea { min-height: 90px; }
+
+.submit-btn {
+  font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #fff; background: var(--accent); border: none;
+  padding: 0.95rem 2rem; cursor: pointer; border-radius: 5px; transition: background var(--transition);
+  margin-top: 1rem;
+}
+.submit-btn:hover { background: var(--accent-hover); }
+.submit-btn:disabled { background: var(--ink-faint); cursor: not-allowed; }
+
+.thanks {
+  display: none; text-align: center; padding: 3rem 1rem;
+}
+.thanks.show { display: block; animation: fadeUp 0.4s ease; }
+.thanks h2 {
+  font-family: 'Playfair Display', serif; font-style: italic; font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 400; color: var(--ink); margin-bottom: 1rem;
+}
+.thanks p { color: var(--ink-mid); font-size: 1.05rem; margin-bottom: 1.5rem; }
+.thanks a {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--accent); text-decoration: none;
+}
+.thanks a:hover { color: var(--accent-hover); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+.back-link {
+  display: inline-block; margin-top: 2rem; font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none; transition: color var(--transition);
+}
+.back-link:hover { color: var(--accent-hover); }
+.site-footer {
+  padding: 1.5rem clamp(1.5rem, 5vw, 3.5rem); border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--ink-muted); text-transform: uppercase; }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-link {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ink-muted); text-decoration: none; transition: color var(--transition);
+}
+.footer-link:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="wordmark" href="index.html">Fiat <em>Musica</em><span>Listen</span></a>
+  <nav class="site-nav">
+    <a class="nav-link" href="index.html#songs">The Songs</a>
+    <span class="nav-divider"></span>
+    <a class="nav-link is-page" href="walk-around.html">The Idea</a>
+    <a class="nav-link is-page" href="essay.html">Essay</a>
+    <a class="nav-link is-page" href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="wrap">
+  <div id="form-view">
+    <div class="eyebrow">Tell Me What You Heard</div>
+    <h1>Sixty seconds of<br><em>your honest opinion.</em></h1>
+    <p class="lede">
+      These are human-written songs, produced with AI under my direction. What I need is real
+      assessment — not encouragement. Be blunt. It helps more than kindness.
+    </p>
+    <p class="honest-note">~ 60 seconds · 5 quick questions · one optional comment</p>
+
+    <!-- Q1 -->
+    <div class="q" data-q="first_impression">
+      <div class="q-num">01</div>
+      <div class="q-text">First five seconds: stay or skip?</div>
+      <div class="opts">
+        <div class="opt" data-val="keep"><span class="opt-marker"></span> I'd keep listening</div>
+        <div class="opt" data-val="skip"><span class="opt-marker"></span> I'd probably skip</div>
+        <div class="opt" data-val="unsure"><span class="opt-marker"></span> Not sure</div>
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q" data-q="hook_rating">
+      <div class="q-num">02</div>
+      <div class="q-text">Rate the hook — melody and lyrics together.</div>
+      <div class="q-help">1 = forgettable · 5 = decent but generic · 10 = stuck in my head</div>
+      <div class="scale" id="scale"></div>
+      <div class="scale-ends"><span>Forgettable</span><span>Unforgettable</span></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="q" data-q="sounds_like">
+      <div class="q-num">03</div>
+      <div class="q-text">What does this sound like?</div>
+      <div class="q-help">Name an artist, era, or genre it reminds you of. "Nothing" is a valid answer.</div>
+      <input type="text" id="sounds-like" placeholder="e.g. early Elliott Smith, 70s AM radio, nothing in particular…">
+    </div>
+
+    <!-- Q4 -->
+    <div class="q" data-q="lyrics">
+      <div class="q-num">04</div>
+      <div class="q-text">The lyrics — pick one.</div>
+      <div class="opts">
+        <div class="opt" data-val="unnoticed"><span class="opt-marker"></span> Didn't notice them — the music dominated</div>
+        <div class="opt" data-val="generic"><span class="opt-marker"></span> Noticed, but generic</div>
+        <div class="opt" data-val="some_stood_out"><span class="opt-marker"></span> A few lines stood out</div>
+        <div class="opt" data-val="memorable"><span class="opt-marker"></span> Genuinely memorable</div>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q" data-q="would_listen_full">
+      <div class="q-num">05</div>
+      <div class="q-text">Would you listen to a full version?</div>
+      <div class="opts">
+        <div class="opt" data-val="yes"><span class="opt-marker"></span> Yes</div>
+        <div class="opt" data-val="if_fan"><span class="opt-marker"></span> Only if I was already a fan</div>
+        <div class="opt" data-val="no"><span class="opt-marker"></span> No</div>
+      </div>
+    </div>
+
+    <!-- Optional comment -->
+    <div class="q" data-q="comment">
+      <div class="q-num">+</div>
+      <div class="q-text">Anything else that hit you?</div>
+      <div class="q-help">Good or bad. Optional.</div>
+      <textarea id="comment" placeholder="Say more, if you'd like…"></textarea>
+    </div>
+
+    <button class="submit-btn" id="submit-btn">Send my honest take</button>
+    <div style="margin-top:1rem;"><a class="back-link" href="index.html">← Back to the music</a></div>
+  </div>
+
+  <div class="thanks" id="thanks-view">
+    <h2>Thank you — that's exactly what I needed.</h2>
+    <p>Honest reactions are worth more than applause. This helps me know which songs to push.</p>
+    <a href="index.html">← Back to the music</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copy">© 2026 Fiat Musica · James Pauli</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://fiatmusica.com">Fiat Musica</a>
+    <a class="footer-link" href="mailto:jim@fiatmusica.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+const response = { first_impression: null, hook_rating: null, sounds_like: '', lyrics: null, would_listen_full: null, comment: '' };
+
+// single-select option groups
+document.querySelectorAll('.q .opts').forEach(group => {
+  group.querySelectorAll('.opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      group.querySelectorAll('.opt').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      const qKey = opt.closest('.q').dataset.q;
+      response[qKey] = opt.dataset.val;
+    });
+  });
+});
+
+// 1-10 scale
+const scale = document.getElementById('scale');
+for (let i = 1; i <= 10; i++) {
+  const b = document.createElement('button');
+  b.className = 'scale-btn'; b.textContent = i;
+  b.addEventListener('click', () => {
+    scale.querySelectorAll('.scale-btn').forEach(x => x.classList.remove('selected'));
+    b.classList.add('selected');
+    response.hook_rating = i;
+  });
+  scale.appendChild(b);
+}
+
+document.getElementById('sounds-like').addEventListener('input', e => response.sounds_like = e.target.value);
+document.getElementById('comment').addEventListener('input', e => response.comment = e.target.value);
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+  // ── DATA CAPTURE GOES HERE ──
+  // Front-end only for now. To store responses, POST `response` to a form
+  // service (Formspree, Google Forms, a Worker, etc.). Example:
+  //   fetch('https://formspree.io/f/XXXX', {
+  //     method:'POST', headers:{'Content-Type':'application/json'},
+  //     body: JSON.stringify(response)
+  //   });
+  console.log('Feedback response (not yet stored):', response);
+  document.getElementById('form-view').style.display = 'none';
+  document.getElementById('thanks-view').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+</script>
+
+</body>
+</html>

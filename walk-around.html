@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walk Around the Song — Fiat Musica</title>
+<meta name="description" content="The idea behind Fiat Musica: a song is a form you can walk around, heard from several angles, each catching a different light.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f4f3f1; --bg-elevated: #ffffff; --bg-subtle: #ecebe8;
+  --ink: #1e1a14; --ink-mid: #4a4338; --ink-muted: #8a7e70; --ink-faint: #c4b8a8;
+  --accent: #b8860b; --accent-hover: #9a700a;
+  --border: rgba(30,26,20,0.1); --border-mid: rgba(30,26,20,0.18);
+  --transition: 0.2s ease;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+html, body { overflow-x: hidden; width: 100%; max-width: 100%; }
+body {
+  background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif;
+  font-weight: 400; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased;
+}
+.site-header {
+  position: sticky; top: 0; z-index: 200; background: var(--ink);
+  border-bottom: 2px solid var(--accent); padding: 0 clamp(1.5rem, 5vw, 3.5rem);
+  height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  box-shadow: 0 2px 20px rgba(30,26,20,0.18);
+}
+.wordmark {
+  font-family: 'Playfair Display', serif; font-style: italic; font-weight: 500;
+  font-size: 1.5rem; color: var(--bg); letter-spacing: -0.01em; text-decoration: none;
+  white-space: nowrap; display: inline-flex; align-items: center;
+}
+.wordmark em { font-style: italic; color: var(--accent); font-weight: 500; margin-left: 0.3em; }
+.wordmark span {
+  font-style: normal; font-weight: 400; color: rgba(247,243,238,0.55);
+  font-size: 0.62rem; letter-spacing: 0.28em; text-transform: uppercase;
+  margin-left: 1rem; padding-left: 1rem; font-family: 'DM Mono', monospace;
+  vertical-align: middle; border-left: 1px solid rgba(247,243,238,0.22);
+}
+.site-nav { display: flex; align-items: center; gap: clamp(0.4rem, 1.5vw, 0.8rem); }
+.nav-link {
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: rgba(247,243,238,0.7); text-decoration: none;
+  padding: 0.5rem 0.9rem; border-radius: 4px; transition: all var(--transition);
+}
+.nav-link:hover { color: var(--bg); background: rgba(247,243,238,0.08); }
+.nav-link.current { color: var(--accent); }
+.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.3rem; }
+.nav-link.is-page::after { content: '\2197'; font-size: 0.85em; margin-left: 0.35em; opacity: 0.7; vertical-align: baseline; }
+
+.wrap { max-width: 820px; padding: clamp(4rem, 10vw, 7rem) clamp(1.5rem, 5vw, 3.5rem) clamp(4rem, 8vw, 6rem); }
+.eyebrow {
+  font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.eyebrow::after { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--accent); opacity: 0.6; }
+h1 {
+  font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+  font-weight: 400; line-height: 1.12; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1.75rem;
+}
+h1 em { font-style: italic; color: var(--accent-hover); }
+.body p {
+  font-size: clamp(1.05rem, 1.9vw, 1.22rem); line-height: 1.8; color: var(--ink-mid); margin-bottom: 1.5rem; max-width: 680px;
+}
+.body p strong { color: var(--ink); font-weight: 600; }
+.figure { margin: 2.5rem 0; }
+.figure-art {
+  aspect-ratio: 16 / 9; background: var(--bg-subtle); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px;
+}
+.figure-art img { width: 100%; height: 100%; object-fit: cover; }
+.figure-art .placeholder {
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-faint); text-align: center; padding: 1rem;
+}
+.figure-cap {
+  font-family: 'DM Mono', monospace; font-size: 0.64rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-muted); text-align: center; margin-top: 0.75rem;
+}
+.back-link {
+  display: inline-block; margin-top: 1.5rem; font-family: 'DM Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); text-decoration: none; transition: color var(--transition);
+}
+.back-link:hover { color: var(--accent-hover); }
+.site-footer {
+  padding: 1.5rem clamp(1.5rem, 5vw, 3.5rem); border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: var(--ink-muted); text-transform: uppercase; }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-link {
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ink-muted); text-decoration: none; transition: color var(--transition);
+}
+.footer-link:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="wordmark" href="index.html">Fiat <em>Musica</em><span>Listen</span></a>
+  <nav class="site-nav">
+    <a class="nav-link" href="index.html#songs">The Songs</a>
+    <span class="nav-divider"></span>
+    <a class="nav-link is-page current" href="walk-around.html">The Idea</a>
+    <a class="nav-link is-page" href="essay.html">Essay</a>
+    <a class="nav-link is-page" href="feedback.html">Feedback</a>
+    <a class="nav-link is-page" href="about.html">About</a>
+  </nav>
+</header>
+
+<section class="wrap">
+  <div class="eyebrow">The Idea</div>
+  <h1>Walk <em>around</em> the song.</h1>
+  <div class="body">
+    <p>
+      A statue looks one way from the front and another from the side. No single view is
+      the "real" one — the work is the whole of them, held together in the mind. Songs, we
+      believe, are the same.
+    </p>
+    <p>
+      So each song here begins with a <strong>single</strong> — a clear way in, the cut you'd
+      release. But the single is only one angle. Its <strong>triangulations</strong> turn the
+      same composition toward other light: more intimate, more experimental, more performed.
+      Play the single, then switch. The song you assemble in your own ear is the truest one of all.
+    </p>
+
+    <div class="figure">
+      <div class="figure-art">
+        <!-- Replace with generated image: <img src="images/walk-around.jpg" alt=""> -->
+        <div class="placeholder">[ image goes here ]<br>walk-around the song</div>
+      </div>
+      <div class="figure-cap">One form · many angles</div>
+    </div>
+
+    <p>
+      This is not a way of producing more music. It is a way of listening to it with more
+      attention — a structure that turns abundance into understanding rather than noise. You are
+      invited to do, deliberately, what a devoted listener has always done by instinct: to walk
+      around a song until you can see it whole.
+    </p>
+
+    <a class="back-link" href="index.html">← Back to the music</a>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-copy">© 2026 Fiat Musica · James Pauli</div>
+  <div class="footer-links">
+    <a class="footer-link" href="https://fiatmusica.com">Fiat Musica</a>
+    <a class="footer-link" href="mailto:jim@fiatmusica.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
