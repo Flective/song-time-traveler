@@ -270,8 +270,22 @@ textarea { min-height: 90px; }
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const response = { first_impression: null, hook_rating: null, sounds_like: '', lyrics: null, would_listen_full: null, comment: '' };
+/* ── SUPABASE CONFIG ──
+   Paste your two values from Supabase → Project Settings → API.
+   The anon key is safe to ship in a public site. */
+const SUPABASE_URL = 'https://mjdgziwmslgourrtwnjk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_lq5puotc3T1LdPp3TtHnsg_BscGaoHK';
+
+const sb = (SUPABASE_URL.startsWith('http') && window.supabase)
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+// which song is this feedback about? from ?song=ID in the URL, else 'general'
+const songId = new URLSearchParams(location.search).get('song') || 'general';
+
+const response = { song_id: songId, first_impression: null, hook_rating: null, sounds_like: '', lyrics: null, would_listen_full: null, comment: '' };
 
 // single-select option groups
 document.querySelectorAll('.q .opts').forEach(group => {
@@ -301,18 +315,23 @@ for (let i = 1; i <= 10; i++) {
 document.getElementById('sounds-like').addEventListener('input', e => response.sounds_like = e.target.value);
 document.getElementById('comment').addEventListener('input', e => response.comment = e.target.value);
 
-document.getElementById('submit-btn').addEventListener('click', () => {
-  // ── DATA CAPTURE GOES HERE ──
-  // Front-end only for now. To store responses, POST `response` to a form
-  // service (Formspree, Google Forms, a Worker, etc.). Example:
-  //   fetch('https://formspree.io/f/XXXX', {
-  //     method:'POST', headers:{'Content-Type':'application/json'},
-  //     body: JSON.stringify(response)
-  //   });
-  console.log('Feedback response (not yet stored):', response);
-  document.getElementById('form-view').style.display = 'none';
-  document.getElementById('thanks-view').classList.add('show');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+document.getElementById('submit-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    if (sb) {
+      const { error } = await sb.from('feedback').insert([response]);
+      if (error) throw error;
+    } else {
+      console.log('Feedback (Supabase not configured yet):', response);
+    }
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('thanks-view').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (err) {
+    console.error('Feedback save failed:', err);
+    btn.disabled = false; btn.textContent = 'Try again — send my honest take';
+  }
 });
 </script>
 
