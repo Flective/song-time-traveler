@@ -190,7 +190,7 @@ textarea { min-height: 90px; }
       These are human-written songs, produced with AI under my direction. What I need is real
       assessment — not encouragement. Be blunt. It helps more than kindness.
     </p>
-    <p class="honest-note">~ 60 seconds · 5 quick questions · one optional comment</p>
+    <p class="honest-note">~ 90 seconds · a few quick questions · all the open fields optional</p>
 
     <!-- Q1 -->
     <div class="q" data-q="first_impression">
@@ -235,12 +235,20 @@ textarea { min-height: 90px; }
     <!-- Q5 -->
     <div class="q" data-q="would_listen_full">
       <div class="q-num">05</div>
-      <div class="q-text">Would you listen to a full version?</div>
+      <div class="q-text">Would you seek out more of this artist's music?</div>
       <div class="opts">
-        <div class="opt" data-val="yes"><span class="opt-marker"></span> Yes</div>
-        <div class="opt" data-val="if_fan"><span class="opt-marker"></span> Only if I was already a fan</div>
+        <div class="opt" data-val="yes"><span class="opt-marker"></span> Yes — I'd go looking for more</div>
+        <div class="opt" data-val="maybe"><span class="opt-marker"></span> Maybe, if it crossed my path</div>
         <div class="opt" data-val="no"><span class="opt-marker"></span> No</div>
       </div>
+    </div>
+
+    <!-- Q6 — taste calibration -->
+    <div class="q" data-q="favorite_artists">
+      <div class="q-num">06</div>
+      <div class="q-text">A few artists you actually love?</div>
+      <div class="q-help">So I know where your ear is coming from. Optional.</div>
+      <input type="text" id="favorite-artists" placeholder="e.g. Radiohead, Joni Mitchell, Bon Iver…">
     </div>
 
     <!-- Optional comment -->
@@ -249,6 +257,14 @@ textarea { min-height: 90px; }
       <div class="q-text">Anything else that hit you?</div>
       <div class="q-help">Good or bad. Optional.</div>
       <textarea id="comment" placeholder="Say more, if you'd like…"></textarea>
+    </div>
+
+    <!-- Optional contact -->
+    <div class="q" data-q="contact">
+      <div class="q-num">+</div>
+      <div class="q-text">Open to a follow-up?</div>
+      <div class="q-help">Only if you'd like me to be able to reach back. Name or email. Optional.</div>
+      <input type="text" id="contact" placeholder="Name or email — optional">
     </div>
 
     <button class="submit-btn" id="submit-btn">Send my honest take</button>
@@ -285,7 +301,7 @@ const sb = (SUPABASE_URL.startsWith('http') && window.supabase)
 // which song is this feedback about? from ?song=ID in the URL, else 'general'
 const songId = new URLSearchParams(location.search).get('song') || 'general';
 
-const response = { song_id: songId, first_impression: null, hook_rating: null, sounds_like: '', lyrics: null, would_listen_full: null, comment: '' };
+const response = { song_id: songId, first_impression: null, hook_rating: null, sounds_like: '', lyrics: null, would_listen_full: null, favorite_artists: '', comment: '', contact: '' };
 
 // single-select option groups
 document.querySelectorAll('.q .opts').forEach(group => {
@@ -313,7 +329,9 @@ for (let i = 1; i <= 10; i++) {
 }
 
 document.getElementById('sounds-like').addEventListener('input', e => response.sounds_like = e.target.value);
+document.getElementById('favorite-artists').addEventListener('input', e => response.favorite_artists = e.target.value);
 document.getElementById('comment').addEventListener('input', e => response.comment = e.target.value);
+document.getElementById('contact').addEventListener('input', e => response.contact = e.target.value);
 
 document.getElementById('submit-btn').addEventListener('click', async () => {
   const btn = document.getElementById('submit-btn');
