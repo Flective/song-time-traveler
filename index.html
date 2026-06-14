@@ -572,8 +572,10 @@ body::before {
 <body>
 
 <header class="site-header">
-  <a class="wordmark" href="#">Fiat <em>Musica</em><span>Listen</span></a>
+  <a class="wordmark" href="index.html">Fiat <em>Musica</em><span>Listen</span></a>
   <nav class="site-nav">
+    <a class="nav-link" href="#songs">The Songs</a>
+    <span class="nav-divider"></span>
     <a class="nav-link is-page" href="walk-around.html">The Idea</a>
     <a class="nav-link is-page" href="essay.html">Essay</a>
     <a class="nav-link is-page" href="feedback.html">Feedback</a>
@@ -720,7 +722,7 @@ And I'll be there`,
       { key: 'ethereal',   label: 'ethereal',   file: 'songs/laughing-in-my-ear_b-ethereal.mp3',   color: 'var(--tri-2)', blurb: 'Airier and open — the melody left to float and dissolve.' },
       { key: 'percussive', label: 'percussive', file: 'songs/laughing-in-my-ear_c-percussive.mp3', color: 'var(--tri-3)', blurb: 'Driven by pulse — the song pushed forward on its rhythm.' },
       { key: 'smooth',     label: 'smooth',     file: 'songs/laughing-in-my-ear_d-smooth.mp3',     color: 'var(--tri-4)', blurb: 'The radio cut — polished, even, easy to fall into.' },
-      { key: 'solid',      label: 'solid',      file: 'songs/laughing-in-my-ear_e-solid.mp3',      color: 'var(--tri-5)', blurb: 'Grounded and full-bodied — the most straight-ahead rendering.' },
+      { key: 'solid',      label: 'solid',      file: 'songs/laughing-in-my-ear_e-solid.mp3',      color: 'var(--tri-5)', blurb: 'Grounded and full-bodied — the most straight-ahead arrangement.' },
     ],
   },
   {
@@ -817,7 +819,7 @@ bum, bum, bum`,
       { key: 'casual',   label: 'casual',   file: 'songs/when-i-stumble_a-casual.mp3',   color: 'var(--tri-1)', blurb: 'The radio cut — loose and conversational, the confession worn lightly.' },
       { key: 'mellow',   label: 'mellow',   file: 'songs/when-i-stumble_b-mellow.mp3',   color: 'var(--tri-4)', blurb: 'Slowed and softened — the self-reckoning turned inward and quiet.' },
       { key: 'duet',     label: 'duet',     file: 'songs/when-i-stumble_c-duet.mp3',     color: 'var(--tri-2)', blurb: 'Two voices — the lie and the one who sees it, sung against each other.' },
-      { key: 'pastiche', label: 'pastiche', file: 'songs/when-i-stumble_d-pastiche.mp3', color: 'var(--tri-3)', blurb: 'A stylized rendering — the song dressed in borrowed clothes, fittingly.' },
+      { key: 'pastiche', label: 'pastiche', file: 'songs/when-i-stumble_d-pastiche.mp3', color: 'var(--tri-3)', blurb: 'A stylized arrangement — the song dressed in borrowed clothes, fittingly.' },
     ],
   },
   {
@@ -842,7 +844,7 @@ And what if we don't reach it in good time?
 I hope we don't pretend to because that is no use`,
     video: '',
     triangulations: [
-      { key: 'pristine', label: 'pristine', file: 'songs/never-mentioned_a-pristine.mp3', color: 'var(--tri-1)', blurb: 'The first rendering.' },
+      { key: 'pristine', label: 'pristine', file: 'songs/never-mentioned_a-pristine.mp3', color: 'var(--tri-1)', blurb: 'The first arrangement.' },
     ],
   },
   {
@@ -877,7 +879,7 @@ I forgot
 (Oh-oh-oh-oh) (Oh-oh-oh-oh)`,
     video: '',
     triangulations: [
-      { key: 'baleful', label: 'baleful', file: 'songs/the-fences-on-your-side_a-baleful.mp3', color: 'var(--tri-1)', blurb: 'The first rendering.' },
+      { key: 'baleful', label: 'baleful', file: 'songs/the-fences-on-your-side_a-baleful.mp3', color: 'var(--tri-1)', blurb: 'The first arrangement.' },
     ],
   },
   {
@@ -912,7 +914,7 @@ Why you hold your eyes closed
 Why you hold your eyes closed`,
     video: '',
     triangulations: [
-      { key: 'sincere', label: 'sincere', file: 'songs/hard-to-see_a_sincere.mp3', color: 'var(--tri-1)', blurb: 'The first rendering.' },
+      { key: 'sincere', label: 'sincere', file: 'songs/hard-to-see_a_sincere.mp3', color: 'var(--tri-1)', blurb: 'The first arrangement.' },
     ],
   },
   {
@@ -945,7 +947,7 @@ When it's stark
 When it's dark"`,
     video: '',
     triangulations: [
-      { key: 'duet', label: 'duet', file: 'songs/when-its-dark_a-duet.mp3', color: 'var(--tri-1)', blurb: 'The first rendering.' },
+      { key: 'duet', label: 'duet', file: 'songs/when-its-dark_a-duet.mp3', color: 'var(--tri-1)', blurb: 'The first arrangement.' },
     ],
   },
   {
@@ -965,7 +967,7 @@ Why'd ya hafta? Why'd ya hafta?
 Why'd ya hafta treat me so bad?`,
     video: '',
     triangulations: [
-      { key: 'casual', label: 'casual', file: 'songs/whyd-ya-hafta_a-casual.mp3', color: 'var(--tri-1)', blurb: 'The first rendering.' },
+      { key: 'casual', label: 'casual', file: 'songs/whyd-ya-hafta_a-casual.mp3', color: 'var(--tri-1)', blurb: 'The first arrangement.' },
     ],
   },
 ];
@@ -1000,9 +1002,9 @@ function stepFlat(dir) {
   playSong(e.id, e.pi);
 }
 
-/* ── Generative per-rendition artwork ──
-   Seeded by song id + rendition key, tinted by the rendition's color.
-   Deterministic: same rendition always yields the same image.
+/* ── Generative per-arrangement artwork ──
+   Seeded by song id + arrangement key, tinted by the arrangement's color.
+   Deterministic: same arrangement always yields the same image.
    When real art exists later, swap the canvas for an <img>. */
 function hashStr(str) {
   let h = 2166136261;
@@ -1301,7 +1303,7 @@ function playSong(id, pi = 0) {
 
   const card = document.getElementById(`card-${id}`);
   if (card) {
-    // resolve the rendition's CSS var color to an actual value, then tint the card
+    // resolve the arrangement's CSS var color to an actual value, then tint the card
     const probe = document.createElement('span');
     probe.style.color = tri.color;
     document.body.appendChild(probe);
