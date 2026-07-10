@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fiat Musica — The Song Behind the Songs</title>
-<meta name="description" content="A new way to hear a song: a single radio cut, surrounded by triangulations — several true renditions of the same composition, each a different light on the same form.">
+<meta name="description" content="A new way to hear a song: several true renditions of the same composition, each a different light on the same form — no version is the definitive one.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
@@ -62,9 +62,9 @@ body::before {
   position: sticky; top: 0; z-index: 200;
   background: var(--ink);
   border-bottom: 2px solid var(--accent);
-  padding: 0 clamp(1.5rem, 5vw, 3.5rem);
-  height: 72px; display: flex; align-items: center;
-  justify-content: space-between; gap: 2rem;
+  padding: 0 clamp(1rem, 5vw, 3.5rem);
+  min-height: 72px; display: flex; align-items: center;
+  justify-content: space-between; gap: 1rem; flex-wrap: wrap;
   box-shadow: 0 2px 20px rgba(30,26,20,0.18);
 }
 .wordmark {
@@ -80,17 +80,27 @@ body::before {
   margin-left: 1rem; padding-left: 1rem; font-family: 'DM Mono', monospace;
   vertical-align: middle; border-left: 1px solid rgba(247,243,238,0.22);
 }
-.site-nav { display: flex; align-items: center; gap: clamp(0.5rem, 2vw, 1rem); }
+.site-nav { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; justify-content: flex-end; }
 .nav-link {
   font-family: 'DM Mono', monospace; font-size: 0.66rem;
-  letter-spacing: 0.18em; text-transform: uppercase;
+  letter-spacing: 0.16em; text-transform: uppercase;
   color: rgba(247,243,238,0.7); text-decoration: none;
-  padding: 0.5rem 0.9rem; border-radius: 4px;
-  transition: all var(--transition); position: relative;
+  padding: 0.5rem 0.7rem; border-radius: 4px;
+  transition: all var(--transition); position: relative; white-space: nowrap;
 }
 .nav-link:hover { color: var(--bg); background: rgba(247,243,238,0.08); }
-.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.3rem; }
-.nav-link.is-page::after { content: '\2197'; font-size: 0.85em; margin-left: 0.35em; opacity: 0.7; vertical-align: baseline; }
+.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.2rem; }
+.nav-link.is-page::after { content: '\2197'; font-size: 0.85em; margin-left: 0.3em; opacity: 0.7; vertical-align: baseline; }
+
+@media (max-width: 600px) {
+  .site-header { padding: 0.7rem 1rem; gap: 0.5rem; }
+  .wordmark { font-size: 1.25rem; }
+  .wordmark span { font-size: 0.62rem; margin-left: 0.6rem; padding-left: 0.6rem; letter-spacing: 0.18em; }
+  .site-nav { width: 100%; justify-content: flex-start; gap: 0.15rem; }
+  .nav-link { font-size: 0.58rem; padding: 0.4rem 0.5rem; letter-spacing: 0.1em; }
+  .nav-divider { display: none; }
+  .nav-link.is-page::after { display: none; }
+}
 
 .hero {
   padding: clamp(2.5rem, 6vw, 4rem) clamp(1.5rem, 5vw, 3.5rem) clamp(2.5rem, 5vw, 4rem);
@@ -137,10 +147,8 @@ body::before {
   margin-top: clamp(1.5rem, 4vw, 3rem);
   position: relative; z-index: 1;
 }
-/* intro text inside the dark band */
 .song-zone .songs-intro .section-label { color: var(--amber, var(--accent)); }
 .song-zone .songs-intro h2 { color: var(--parch, #f4f3f1); }
-/* toggle on dark — both halves visibly filled, raised, button-like */
 .song-zone .view-toggle { border: 1px solid rgba(247,243,238,0.35); box-shadow: 0 2px 8px rgba(0,0,0,0.35); }
 .song-zone .view-toggle button { background: #4a4338; color: rgba(247,243,238,0.85); }
 .song-zone .view-toggle button:not(:last-child) { border-right: 1px solid rgba(247,243,238,0.25); }
@@ -148,7 +156,6 @@ body::before {
 .song-zone .view-toggle button.active { background: var(--accent); color: #fff; }
 .song-zone .catalog-summary { color: rgba(247,243,238,0.55); }
 .song-zone .catalog-summary strong { color: var(--accent); }
-/* list rows on dark */
 .song-zone .list-row { border-bottom-color: rgba(247,243,238,0.12); }
 .song-zone .list-row:hover { background: rgba(247,243,238,0.05); }
 .song-zone .list-title { color: var(--parch, #f4f3f1); }
@@ -184,9 +191,11 @@ body::before {
 .list-row {
   display: flex; align-items: center; gap: 1rem; padding: 0.7rem 0.85rem;
   border-bottom: 1px solid var(--border); transition: background var(--transition);
+  border-left: 3px solid transparent;
 }
 .list-row:hover { background: var(--bg-subtle); }
-.list-row.playing { background: color-mix(in srgb, var(--accent) 12%, var(--bg-elevated)); }
+/* playing row: subtle — left accent bar + slight tint, no bright fill */
+.list-row.playing { background: rgba(247,243,238,0.04); border-left-color: var(--accent); }
 .list-thumb {
   width: 40px; height: 40px; border-radius: 7px; overflow: hidden; flex-shrink: 0;
   border: 1px solid var(--border); position: relative;
@@ -198,7 +207,7 @@ body::before {
   display: flex; align-items: center; justify-content: center; color: var(--ink-mid); transition: all var(--transition);
 }
 .list-play:hover { border-color: var(--accent); color: var(--accent); }
-.list-row.playing .list-play { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.list-row.playing .list-play { background: var(--accent); border-color: var(--accent); color: #fff; }
 .list-play svg { width: 14px; height: 14px; pointer-events: none; }
 .list-title {
   font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.2rem;
@@ -232,13 +241,11 @@ body::before {
 }
 .song-card.playing::before { background: var(--card-tint, var(--accent)); }
 
-/* Two columns: left = title/image/controls, right = lyrics */
 .song-inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.25rem, 3vw, 2.25rem); align-items: start; }
 @media (max-width: 720px) { .song-inner { grid-template-columns: 1fr; } }
 
 .song-left { display: flex; flex-direction: column; min-width: 0; }
 
-/* Title row: title left, play control right */
 .song-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
 .song-titleblock { flex: 1; min-width: 0; }
 .song-title {
@@ -252,7 +259,6 @@ body::before {
 }
 .song-sub strong { color: var(--accent-hover); font-weight: 400; }
 
-/* Artwork sits below the title; grows when lyrics expand */
 .song-art {
   width: 130px; height: 130px; border-radius: 14px; overflow: hidden;
   position: relative; border: 1px solid var(--border);
@@ -339,7 +345,6 @@ body::before {
 .video-frame .vf-icon { font-size: 1.5rem; opacity: 0.5; }
 .video-frame .vf-text { font-family: 'DM Mono', monospace; font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; }
 
-/* Lyrics: header line carries the word + expand toggle on the right */
 .lyrics-box { display: flex; flex-direction: column; min-width: 0; }
 .lyrics-head {
   display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem;
@@ -369,7 +374,6 @@ body::before {
   color: var(--ink-mid); white-space: pre-line; overflow: hidden;
   max-height: 11em; transition: max-height 0.45s ease;
 }
-/* Single-version cards: shorter lyric clip to distinguish them */
 .song-card.single-only .lyrics-text { max-height: 7.5em; }
 .lyrics-clip.expanded .lyrics-text { max-height: 2000px; }
 .lyrics-clip.expanded .lyrics-fade { opacity: 0; }
@@ -378,61 +382,19 @@ body::before {
   text-transform: uppercase; color: var(--ink-faint); padding: 1.1rem 0;
 }
 
-.idea {
-  margin: clamp(4rem, 8vw, 6rem) clamp(1.5rem, 5vw, 3.5rem) 0;
-  padding: clamp(2rem, 5vw, 3.5rem); background: var(--bg-elevated);
-  border: 1px solid var(--border); display: grid;
-  grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center;
-}
-@media (max-width: 720px) { .idea { grid-template-columns: 1fr; } }
-.idea h2 {
-  font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 400; line-height: 1.25; color: var(--ink); margin-bottom: 1.25rem;
-}
-.idea h2 em { font-style: italic; color: var(--accent-hover); }
-.idea p { font-size: 0.95rem; line-height: 1.85; color: var(--ink-mid); }
-.idea p + p { margin-top: 1rem; }
-.idea strong { color: var(--ink); font-weight: 500; }
-.idea-figure { display: flex; flex-direction: column; gap: 0.75rem; }
-.idea-figure-art {
-  aspect-ratio: 4 / 3; background: var(--bg-subtle); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
-}
-.idea-figure-art img { width: 100%; height: 100%; object-fit: cover; }
-.idea-figure-art .placeholder {
-  font-family: 'DM Mono', monospace; font-size: 0.56rem; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--ink-faint); text-align: center; padding: 1rem;
-}
-.idea-figure-cap {
-  font-family: 'DM Mono', monospace; font-size: 0.56rem; letter-spacing: 0.14em;
-  text-transform: uppercase; color: var(--ink-muted); text-align: center;
-}
-
-.about {
-  margin: clamp(3rem, 6vw, 4.5rem) clamp(1.5rem, 5vw, 3.5rem) 0;
-  padding: clamp(2rem, 5vw, 3.5rem); border: 1px solid var(--border);
-  background: var(--bg-elevated); max-width: 760px;
-}
-.about h2 {
-  font-family: 'Playfair Display', serif; font-size: clamp(1.5rem, 3vw, 2.1rem);
-  font-weight: 400; line-height: 1.2; color: var(--ink); margin-bottom: 1.25rem;
-}
-.about p { font-size: 0.95rem; line-height: 1.85; color: var(--ink-mid); }
-.about p + p { margin-top: 1rem; }
-.about strong { color: var(--ink); font-weight: 500; }
-
 .site-footer {
-  margin-top: clamp(3rem, 6vw, 5rem); padding: 1.5rem clamp(1.5rem, 5vw, 3.5rem);
-  border-top: 1px solid var(--border); display: flex; justify-content: space-between;
+  margin-top: 0; padding: 2.5rem clamp(1.5rem, 5vw, 3.5rem);
+  background: var(--ink); border-top: 2px solid var(--accent);
+  display: flex; justify-content: space-between;
   align-items: center; flex-wrap: wrap; gap: 1rem;
 }
-.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em; color: var(--ink-muted); text-transform: uppercase; }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: rgba(247,243,238,0.5); text-transform: uppercase; }
 .footer-links { display: flex; gap: 1.5rem; }
 .footer-link {
-  font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: var(--ink-muted); text-decoration: none; transition: color var(--transition);
+  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: rgba(247,243,238,0.5); text-decoration: none; transition: color var(--transition);
 }
-.footer-link:hover { color: var(--ink); }
+.footer-link:hover { color: var(--accent); }
 
 .player {
   position: fixed; bottom: 0; left: 0; right: 0; height: var(--player-h);
@@ -459,8 +421,7 @@ body::before {
   position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%);
   width: 13px; height: 13px; border-radius: 50%; background: var(--bg);
   border: 2px solid var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,0.4);
-  pointer-events: none; transition: left 0.1s linear;
-  opacity: 1;
+  pointer-events: none; transition: left 0.1s linear; opacity: 1;
 }
 .player-times { display: flex; justify-content: space-between; font-family: 'DM Mono', monospace; font-size: 0.5rem; color: rgba(247,243,238,0.3); letter-spacing: 0.08em; }
 .player-variant-label { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; flex-shrink: 0; white-space: nowrap; }
@@ -504,69 +465,6 @@ body::before {
   color: var(--ink-muted); margin-top: 1.25rem;
 }
 
-/* ── Album builder ── */
-.add-album {
-  font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--ink-muted); background: none; border: none;
-  cursor: pointer; padding: 0; transition: color var(--transition);
-  display: flex; align-items: center; gap: 0.4rem;
-}
-.add-album:hover { color: var(--accent-hover); }
-.add-album .plus { font-size: 0.95rem; line-height: 1; }
-.add-album.added { color: var(--accent-hover); }
-
-.album-bar {
-  position: fixed; bottom: var(--player-h); left: 0; right: 0; z-index: 480;
-  background: var(--bg-elevated); border-top: 1px solid var(--border-mid);
-  box-shadow: 0 -4px 20px rgba(30,26,20,0.08);
-  padding: 0.85rem clamp(1rem, 3vw, 2rem);
-  display: none; align-items: center; gap: 1rem;
-  transform: translateY(100%); transition: transform 0.35s ease;
-}
-.album-bar.show { display: flex; transform: translateY(0); }
-.album-bar-label {
-  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: var(--ink-muted); flex-shrink: 0;
-}
-.album-bar-label strong { color: var(--accent-hover); font-weight: 400; }
-.album-bar-spacer { flex: 1; }
-.album-bar-btn {
-  font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em;
-  text-transform: uppercase; padding: 0.55rem 1.1rem; cursor: pointer;
-  border: 1px solid var(--border-mid); background: transparent; color: var(--ink-mid);
-  transition: all var(--transition);
-}
-.album-bar-btn:hover { border-color: var(--accent); color: var(--accent-hover); }
-.album-bar-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-.album-bar-btn.primary:hover { background: var(--accent-hover); }
-
-.album-track {
-  display: flex; align-items: center; gap: 1rem; padding: 0.85rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.album-track:last-child { border-bottom: none; }
-.album-track-num {
-  font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--ink-faint);
-  width: 1.5rem; flex-shrink: 0;
-}
-.album-track-title { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem; color: var(--ink); flex: 1; }
-.album-track-version {
-  font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.1em;
-  text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px;
-  background: var(--bg-subtle); color: var(--ink-mid);
-}
-.album-track-remove { background: none; border: none; color: var(--ink-faint); cursor: pointer; font-size: 1.1rem; transition: color var(--transition); }
-.album-track-remove:hover { color: var(--accent-hover); }
-.album-empty { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); padding: 2rem 0; text-align: center; }
-
-/* ── Single-version card: same background, just shorter ── */
-.song-card.single-only {
-  background: var(--bg-elevated);
-}
-.song-card.single-only::before { background: var(--ink-faint); }
-.song-card.single-only.playing { background: color-mix(in srgb, var(--card-tint, var(--accent)) 14%, var(--bg-elevated)); }
-.song-card.single-only.playing::before { background: var(--accent); }
-
 </style>
 </head>
 <body>
@@ -584,13 +482,11 @@ body::before {
 </header>
 
 <section class="hero">
-  <div class="hero-eyebrow">Fiat Musica · The Song Behind the Songs</div>
   <h1 class="hero-title">A song is not<br><em>a single recording.</em></h1>
   <p class="hero-body">
     Every song here comes in several <em>triangulations</em> — true renditions of one
-    composition, each catching a different light on the same form. One is marked the
-    <em>single</em>, the way in, the cut you'd hear on the radio. Start there. Then walk
-    around the song.
+    composition, each catching a different light on the same form. No one version is
+    the song; together they triangulate it. Start with one. Then walk around it.
   </p>
   <div class="hero-cue">Press play. Then change your angle.</div>
 </section>
@@ -598,7 +494,7 @@ body::before {
 <div class="song-zone">
 <section class="songs-intro" id="songs">
   <div class="section-label">The Songs</div>
-  <h2>Start with the single — then move around the song.</h2>
+  <h2>Start anywhere — then move around the song.</h2>
 </section>
 
 <div class="songs-controls">
@@ -612,10 +508,6 @@ body::before {
 <div class="songs" id="song-grid"></div>
 <div class="song-list" id="song-list"></div>
 </div>
-
-<!-- THE IDEA moved to walk-around.html -->
-
-<!-- ── ABOUT moved to about.html ── -->
 
 <footer class="site-footer">
   <div class="footer-copy">© 2026 Fiat Musica · James Pauli</div>
@@ -645,7 +537,6 @@ body::before {
 
 <audio id="audio-el" preload="none"></audio>
 
-<!-- ── CONTACT MODAL ──────────────────────────── -->
 <div class="modal-overlay" id="contact-modal">
   <div class="modal">
     <button class="modal-close" id="modal-close" aria-label="Close">×</button>
@@ -660,24 +551,12 @@ body::before {
   </div>
 </div>
 
-<!-- ── ALBUM REMOVED — playable album lives on play.fiatmusica ── -->
-
 <script>
 
-/* ──────────────────────────────────────────────
-   SONG DATA  —  EDIT FREELY
-   Each song = one composition; many triangulations.
-   - single: the key of the default "radio" version (gets the • bullet, plays first)
-   - lyrics: '' hides the lyrics box. Use \n for line breaks.
-   - video:  '' shows "coming soon". Else an embed URL.
-   - each triangulation: { key, label, file, color, blurb }
-       blurb = the rollover/now-playing description (EDITABLE anytime)
-   ────────────────────────────────────────────── */
 const SONGS = [
   {
     id: 'laughing',
     title: 'Laughing In My Ear',
-    single: 'smooth',
     lyrics: `I left myself so far behind
 I don't know where or when
 I made myself so hard to find
@@ -721,14 +600,13 @@ And I'll be there`,
       { key: 'deep',       label: 'deep',       file: 'songs/laughing-in-my-ear_a-deep.mp3',       color: 'var(--tri-1)', blurb: 'The low, resonant reading — weight and shadow under every line.' },
       { key: 'ethereal',   label: 'ethereal',   file: 'songs/laughing-in-my-ear_b-ethereal.mp3',   color: 'var(--tri-2)', blurb: 'Airier and open — the melody left to float and dissolve.' },
       { key: 'percussive', label: 'percussive', file: 'songs/laughing-in-my-ear_c-percussive.mp3', color: 'var(--tri-3)', blurb: 'Driven by pulse — the song pushed forward on its rhythm.' },
-      { key: 'smooth',     label: 'smooth',     file: 'songs/laughing-in-my-ear_d-smooth.mp3',     color: 'var(--tri-4)', blurb: 'The radio cut — polished, even, easy to fall into.' },
+      { key: 'smooth',     label: 'smooth',     file: 'songs/laughing-in-my-ear_d-smooth.mp3',     color: 'var(--tri-4)', blurb: 'Polished and even — easy to fall into.' },
       { key: 'solid',      label: 'solid',      file: 'songs/laughing-in-my-ear_e-solid.mp3',      color: 'var(--tri-5)', blurb: 'Grounded and full-bodied — the most straight-ahead arrangement.' },
     ],
   },
   {
     id: 'insteadofwine',
     title: 'Instead of Wine',
-    single: 'pop',
     lyrics: `The hour is late now, I'm heading home
 I'm thinking of sleep once again, all alone
 Now my memory is dragging me
@@ -754,7 +632,7 @@ Bruising our friendship
 Drinking the dregs instead of wine`,
     video: '',
     triangulations: [
-      { key: 'pop',    label: 'pop',    file: 'songs/instead-of-wine_a-pop.mp3',    color: 'var(--tri-1)', blurb: 'The radio cut — bright, immediate, built to be sung back.' },
+      { key: 'pop',    label: 'pop',    file: 'songs/instead-of-wine_a-pop.mp3',    color: 'var(--tri-1)', blurb: 'Bright and immediate — built to be sung back.' },
       { key: 'mellow', label: 'mellow', file: 'songs/instead-of-wine_b-mellow.mp3', color: 'var(--tri-4)', blurb: 'Softened and unhurried — the same song after midnight.' },
       { key: 'simple', label: 'simple', file: 'songs/instead-of-wine_c-simple.mp3', color: 'var(--tri-2)', blurb: 'Stripped to its bones — voice, a little accompaniment, nothing to hide behind.' },
     ],
@@ -762,7 +640,6 @@ Drinking the dregs instead of wine`,
   {
     id: 'whenistumble',
     title: 'When I Stumble',
-    single: 'casual',
     lyrics: `When I stumble up against
 My own ignorance
 I just pretend
@@ -816,16 +693,58 @@ bum, bum, bum
 bum, bum, bum`,
     video: '',
     triangulations: [
-      { key: 'casual',   label: 'casual',   file: 'songs/when-i-stumble_a-casual.mp3',   color: 'var(--tri-1)', blurb: 'The radio cut — loose and conversational, the confession worn lightly.' },
+      { key: 'casual',   label: 'casual',   file: 'songs/when-i-stumble_a-casual.mp3',   color: 'var(--tri-1)', blurb: 'Loose and conversational — the confession worn lightly.' },
       { key: 'mellow',   label: 'mellow',   file: 'songs/when-i-stumble_b-mellow.mp3',   color: 'var(--tri-4)', blurb: 'Slowed and softened — the self-reckoning turned inward and quiet.' },
       { key: 'duet',     label: 'duet',     file: 'songs/when-i-stumble_c-duet.mp3',     color: 'var(--tri-2)', blurb: 'Two voices — the lie and the one who sees it, sung against each other.' },
       { key: 'pastiche', label: 'pastiche', file: 'songs/when-i-stumble_d-pastiche.mp3', color: 'var(--tri-3)', blurb: 'A stylized arrangement — the song dressed in borrowed clothes, fittingly.' },
     ],
   },
   {
+    id: 'gravity',
+    title: 'The Gravity and All',
+    lyrics: `Now there's a rising in the road
+Headlights in the distance
+There's a truck with a heavy load
+Feeling the resistance
+
+Of the gravity and all
+It takes hold and won't let go
+It almost had me so
+I had to leave and go
+
+Now it's surprising what's been told
+To which I've never wished to listen
+But now I've got to hear and know
+The details I've been missing
+
+About the strategy and role
+Of every single piston
+As it crushes and explodes
+And expresses its insistence
+
+Against the gravity and all
+If it takes hold and won't let go
+It almost had me so
+I had to leave and go
+
+And now that rising in the road
+Is followed by a twisting
+And a fight in the metallic soul
+Of this engine on its mission
+
+To push the truck on down the road
+As it crashes through the inches
+On its way here from long ago
+Towards those headlights in the distance`,
+    video: '',
+    triangulations: [
+      { key: 'piano',     label: 'piano',     file: 'songs/the-gravity-and-all_a-piano.mp3',     color: 'var(--tri-4)', blurb: 'Voice and piano — the song carried plainly.' },
+      { key: 'insistent', label: 'insistent', file: 'songs/the-gravity-and-all_a-insistent.mp3', color: 'var(--tri-3)', blurb: 'Driven and relentless — the engine of the song given its full force.' },
+    ],
+  },
+  {
     id: 'nevermentioned',
     title: 'Never Mentioned',
-    single: 'pristine',
     lyrics: `What is essential
 Indeed is central
 To the working
@@ -850,7 +769,6 @@ I hope we don't pretend to because that is no use`,
   {
     id: 'fences',
     title: 'The Fences On Your Side',
-    single: 'baleful',
     lyrics: `One by one I discover the fences on your side
 One by one I discover the fences on your side
 
@@ -885,7 +803,6 @@ I forgot
   {
     id: 'hardtosee',
     title: 'Hard to See',
-    single: 'sincere',
     lyrics: `Holding your eyes closed until it is hard to see
 Is this some special way that you make up with me
 By holding your eyes closed until it's hard to see
@@ -920,7 +837,6 @@ Why you hold your eyes closed`,
   {
     id: 'whenitsdark',
     title: "When It's Dark",
-    single: 'duet',
     lyrics: `She said: "Alright if you love me
 Alright if you don't
 You'll still be thinking of me
@@ -953,7 +869,6 @@ When it's dark"`,
   {
     id: 'whydyahafta',
     title: "Why'd Ya Hafta?",
-    single: 'casual',
     lyrics: `Why'd ya hafta treat me like you don't care if you do?
 Why'd ya hafta ask me that when you know damn well I do?
 
@@ -981,13 +896,9 @@ function svgPlay()  { return `<svg viewBox="0 0 24 24" fill="currentColor"><path
 function svgPause() { return `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`; }
 
 function singleIndex(song) {
-  const i = song.triangulations.findIndex(t => t.key === song.single);
-  return i >= 0 ? i : 0;
+  return 0;
 }
 
-/* Flat sequence: every arrangement of every song, in order.
-   next/prev and auto-advance walk this list so you step through
-   all of a song's triangulations before moving to the next song. */
 function flatSequence() {
   const seq = [];
   SONGS.forEach(s => s.triangulations.forEach((t, pi) => seq.push({ id: s.id, pi })));
@@ -997,15 +908,11 @@ function stepFlat(dir) {
   const seq = flatSequence();
   if (!seq.length) return;
   let i = seq.findIndex(e => e.id === currentId && e.pi === currentPi);
-  if (i < 0) i = dir > 0 ? -1 : 0;           // nothing playing: next->first, prev->last
+  if (i < 0) i = dir > 0 ? -1 : 0;
   const e = seq[(i + dir + seq.length) % seq.length];
   playSong(e.id, e.pi);
 }
 
-/* ── Generative per-arrangement artwork ──
-   Seeded by song id + arrangement key, tinted by the arrangement's color.
-   Deterministic: same arrangement always yields the same image.
-   When real art exists later, swap the canvas for an <img>. */
 function hashStr(str) {
   let h = 2166136261;
   for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
@@ -1038,17 +945,14 @@ function drawArtCanvas(canvas, songId, tri) {
   const seed = hashStr(songId + ':' + tri.key);
   const rnd = mulberry32(seed);
   const base = resolveColor(tri.color);
-  // parse rgb
   const m = base.match(/\d+/g) || [180,134,11];
   const [r,g,b] = m.map(Number);
-  // background gradient
   const ang = rnd() * Math.PI * 2;
   const gx = Math.cos(ang), gy = Math.sin(ang);
   const grad = ctx.createLinearGradient(W/2 - gx*W/2, H/2 - gy*H/2, W/2 + gx*W/2, H/2 + gy*H/2);
   grad.addColorStop(0, `rgb(${Math.min(r+40,255)},${Math.min(g+40,255)},${Math.min(b+40,255)})`);
   grad.addColorStop(1, `rgb(${Math.max(r-50,0)},${Math.max(g-50,0)},${Math.max(b-50,0)})`);
   ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
-  // soft blobs
   const blobs = 4 + Math.floor(rnd()*4);
   for (let i=0;i<blobs;i++){
     const cx = rnd()*W, cy = rnd()*H, rad = (0.18+rnd()*0.4)*W;
@@ -1059,7 +963,6 @@ function drawArtCanvas(canvas, songId, tri) {
     rg.addColorStop(1, `rgba(${cc},0)`);
     ctx.fillStyle = rg; ctx.beginPath(); ctx.arc(cx,cy,rad,0,Math.PI*2); ctx.fill();
   }
-  // thin geometric lines for signature
   ctx.globalAlpha = 0.18; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5;
   const lines = 2 + Math.floor(rnd()*4);
   for (let i=0;i<lines;i++){
@@ -1081,7 +984,6 @@ function renderSongs() {
     const hasLyrics = s.lyrics && s.lyrics.trim().length > 0;
     const count = s.triangulations.length;
 
-    // ── Single-version card (same layout, shorter lyrics) ──
     if (count === 1) {
       card.classList.add('single-only');
       card.innerHTML = `
@@ -1090,7 +992,7 @@ function renderSongs() {
             <div class="song-head">
               <div class="song-titleblock">
                 <div class="song-title">${s.title}</div>
-                <div class="song-sub">Words &amp; music: James Pauli<br><strong>single — more renditions coming</strong></div>
+                <div class="song-sub">Words &amp; music: James Pauli<br><strong>one rendition — more coming</strong></div>
               </div>
               <button class="song-play" id="play-${s.id}" title="Play">${svgPlay()}</button>
             </div>
@@ -1122,16 +1024,15 @@ function renderSongs() {
       return;
     }
 
-    // ── Full card for triangulated songs ──
     card.innerHTML = `
       <div class="song-inner">
         <div class="song-left">
           <div class="song-head">
             <div class="song-titleblock">
               <div class="song-title">${s.title}</div>
-              <div class="song-sub">Words &amp; music: James Pauli<br><strong>1 single + ${count - 1} triangulations</strong></div>
+              <div class="song-sub">Words &amp; music: James Pauli<br><strong>${count} renditions</strong></div>
             </div>
-            <button class="song-play" id="play-${s.id}" title="Play the single">${svgPlay()}</button>
+            <button class="song-play" id="play-${s.id}" title="Play">${svgPlay()}</button>
           </div>
 
           <div class="song-art" id="art-${s.id}">
@@ -1139,12 +1040,12 @@ function renderSongs() {
             <div class="art-badge" id="artbadge-${s.id}">${s.triangulations[si].label}</div>
           </div>
 
-          <div class="tri-label">Triangulations — tap to change your angle · <span style="color:var(--accent-hover)">•</span> the single</div>
+          <div class="tri-label">Triangulations — tap to change your angle</div>
           <div class="tri-row" id="tri-${s.id}">
             ${s.triangulations.map((t, pi) => `
               <button class="tri-btn" data-song="${s.id}" data-pi="${pi}"
                 style="--btn-color:${t.color}">
-                ${pi === si ? '<span class="dot"></span>' : ''}${t.label}
+                ${t.label}
               </button>`).join('')}
           </div>
 
@@ -1214,8 +1115,6 @@ function renderSongs() {
   });
 }
 
-/* Lyrics expand/collapse — also grows the artwork into the
-   space revealed under the title. */
 function wireLyrics(card, id) {
   const clip = card.querySelector(`#lyr-${id}`);
   const more = card.querySelector(`#lyrmore-${id}`);
@@ -1229,7 +1128,6 @@ function wireLyrics(card, id) {
   if (more) more.addEventListener('click', toggle);
 }
 
-/* Compact list view: play · title · one button per version */
 function renderList() {
   const list = document.getElementById('song-list');
   list.innerHTML = '';
@@ -1247,12 +1145,10 @@ function renderList() {
           <button class="list-ver-btn" data-song="${s.id}" data-pi="${pi}" style="--btn-color:${t.color}">${t.label}</button>`).join('')}
       </div>
     `;
-    // main play button → plays the single (first central version)
     row.querySelector(`#rowplay-${s.id}`).addEventListener('click', e => {
       e.stopPropagation();
       if (currentId === s.id) togglePlayPause(); else playSong(s.id, si);
     });
-    // each version button plays that version
     row.querySelectorAll('.list-ver-btn').forEach(btn => {
       btn.addEventListener('click', e => { e.stopPropagation(); playSong(btn.dataset.song, +btn.dataset.pi); });
     });
@@ -1263,13 +1159,10 @@ function renderList() {
   syncListPlaying();
 }
 
-/* Catalog summary line near the toggle */
 function updateCatalogSummary() {
   const el = document.getElementById('catalog-summary');
   if (!el) return;
-  const songCount = SONGS.length;
-  const verCount = SONGS.reduce((n, s) => n + s.triangulations.length, 0);
-  el.innerHTML = `<strong>${songCount}</strong> songs · <strong>${verCount}</strong> renditions`;
+  el.innerHTML = `From a <strong>large catalog</strong> of original songs`;
 }
 
 function syncListPlaying() {
@@ -1303,7 +1196,6 @@ function playSong(id, pi = 0) {
 
   const card = document.getElementById(`card-${id}`);
   if (card) {
-    // resolve the arrangement's CSS var color to an actual value, then tint the card
     const probe = document.createElement('span');
     probe.style.color = tri.color;
     document.body.appendChild(probe);
@@ -1410,7 +1302,6 @@ renderSongs();
 renderList();
 updateCatalogSummary();
 
-// Cards / List view toggle
 const grid = document.getElementById('song-grid');
 const listEl = document.getElementById('song-list');
 const btnCards = document.getElementById('view-cards');
@@ -1424,14 +1315,12 @@ btnList.addEventListener('click', () => {
   btnList.classList.add('active'); btnCards.classList.remove('active');
 });
 
-// Contact modal
 const contactModal = document.getElementById('contact-modal');
 document.getElementById('contact-link').addEventListener('click', e => { e.preventDefault(); contactModal.classList.add('open'); });
 document.getElementById('modal-close').addEventListener('click', () => contactModal.classList.remove('open'));
 contactModal.addEventListener('click', e => { if (e.target === contactModal) contactModal.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal.classList.remove('open'); });
 
-// Spacebar toggles pause/play (not restart)
 document.addEventListener('keydown', e => {
   if ((e.code === 'Space' || e.key === ' ') && !contactModal.classList.contains('open')) {
     const tag = (e.target.tagName || '').toLowerCase();
