@@ -25,8 +25,8 @@ body {
 }
 .site-header {
   position: sticky; top: 0; z-index: 200; background: var(--ink);
-  border-bottom: 2px solid var(--accent); padding: 0 clamp(1rem, 5vw, 3.5rem);
-  min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  border-bottom: 2px solid var(--accent); padding: 0 clamp(1.5rem, 5vw, 3.5rem);
+  height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 2rem;
   box-shadow: 0 2px 20px rgba(30,26,20,0.18);
 }
 .wordmark {
@@ -41,25 +41,17 @@ body {
   margin-left: 1rem; padding-left: 1rem; font-family: 'DM Mono', monospace;
   vertical-align: middle; border-left: 1px solid rgba(247,243,238,0.22);
 }
-.site-nav { display: flex; align-items: center; gap: 0.3rem; flex-wrap: wrap; justify-content: flex-end; }
+.site-nav { display: flex; align-items: center; gap: clamp(0.4rem, 1.5vw, 0.8rem); }
 .nav-link {
-  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.16em;
+  font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.18em;
   text-transform: uppercase; color: rgba(247,243,238,0.7); text-decoration: none;
-  padding: 0.5rem 0.7rem; border-radius: 4px; transition: all var(--transition); white-space: nowrap;
+  padding: 0.5rem 0.9rem; border-radius: 4px; transition: all var(--transition);
 }
 .nav-link:hover { color: var(--bg); background: rgba(247,243,238,0.08); }
 .nav-link.current { color: var(--accent); }
-.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.2rem; }
-.nav-link.is-page::after { content: '\2197'; font-size: 0.85em; margin-left: 0.3em; opacity: 0.7; vertical-align: baseline; }
-
-@media (max-width: 600px) {
-  .site-header { padding: 0.7rem 1rem; gap: 0.5rem; }
-  .wordmark { font-size: 1.25rem; }
-  .wordmark span { font-size: 0.62rem; margin-left: 0.6rem; padding-left: 0.6rem; letter-spacing: 0.18em; }
-  .site-nav { width: 100%; justify-content: flex-start; gap: 0.15rem; }
-  .nav-link { font-size: 0.58rem; padding: 0.4rem 0.5rem; letter-spacing: 0.1em; }
-  .nav-divider { display: none; }
-  .nav-link.is-page::after { display: none; }
+.nav-divider { width: 1px; height: 20px; background: rgba(247,243,238,0.22); margin: 0 0.3rem; }
+.nav-link.is-page::after {
+  content: '\2197'; font-size: 0.85em; margin-left: 0.35em; opacity: 0.7; vertical-align: baseline;
 }
 
 .essay-hero {
@@ -115,16 +107,16 @@ body {
 }
 .back-link:hover { color: var(--accent-hover); }
 .site-footer {
-  padding: 2.5rem clamp(1.5rem, 5vw, 3.5rem); background: var(--ink); border-top: 2px solid var(--accent);
+  padding: 1.5rem clamp(1.5rem, 5vw, 3.5rem); border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
 }
-.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em; color: rgba(247,243,238,0.5); text-transform: uppercase; }
+.footer-copy { font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em; color: var(--ink-muted); text-transform: uppercase; }
 .footer-links { display: flex; gap: 1.5rem; }
 .footer-link {
-  font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.15em;
-  text-transform: uppercase; color: rgba(247,243,238,0.5); text-decoration: none; transition: color var(--transition);
+  font-family: 'DM Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--ink-muted); text-decoration: none; transition: color var(--transition);
 }
-.footer-link:hover { color: var(--accent); }
+.footer-link:hover { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -263,9 +255,9 @@ body {
   </p>
 
   <p>
-    The recordings on this site are offered in exactly that spirit. Begin with any rendition — each
-    triangulation turns the same composition toward a different light. The song you assemble in
-    your own ear, out of all of them, is the truest one there is.
+    The recordings on this site are offered in exactly that spirit. Begin with any rendition —
+    each triangulation turns the same composition toward a different light. The song you assemble
+    in your own ear, out of all of them, is the truest one there is.
   </p>
 
   <a class="back-link" href="index.html">← Back to the music</a>
