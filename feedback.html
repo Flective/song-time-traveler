@@ -196,7 +196,7 @@ textarea { min-height: 90px; }
       These are human-written songs, produced with AI under my direction. What I need is real
       assessment — not encouragement. Be blunt. It helps more than kindness.
     </p>
-    <p class="honest-note">90 seconds. Be blunt. · a few quick questions · open fields optional</p>
+    <p class="honest-note">Be blunt · a few quick questions · open fields optional</p>
     <div class="feedback-target" id="feedback-target"></div>
 
     <!-- Q1 -->
@@ -315,12 +315,12 @@ const renditionLabel = qp.get('renditionLabel') || null;
 
 const targetEl = document.getElementById('feedback-target');
 if (targetEl) {
-  targetEl.textContent = (songId && songTitle)
-    ? ''
-    : 'General Fiat Musica feedback';
-  if (songId && songTitle) {
-    targetEl.innerHTML = `You're responding to: <strong>${songTitle}</strong>` +
+  const displayTitle = songTitle || songId; // fall back to the raw id if title is missing
+  if (displayTitle) {
+    targetEl.innerHTML = `You're responding to: <strong>${displayTitle}</strong>` +
       (renditionLabel ? ` · <strong>${renditionLabel}</strong>` : '');
+  } else {
+    targetEl.textContent = 'General Fiat Musica feedback';
   }
 }
 
