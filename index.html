@@ -323,7 +323,17 @@ body::before {
   box-shadow: inset 0 1px 2px rgba(0,0,0,0.25);
 }
 .tri-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; }
+.tri-btn-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 15px; height: 15px; border-radius: 50%; margin-right: 0.4em;
+  background: color-mix(in srgb, var(--btn-color, var(--ink-mid)) 55%, #000 0%);
+  color: #fff; font-size: 0.6rem; line-height: 1;
+}
 
+.tri-blurb-head {
+  font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--accent-hover); margin-bottom: 0.3rem;
+}
 .tri-blurb {
   font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.02rem;
   color: var(--ink-mid); min-height: 1.5em; margin-bottom: 1rem; line-height: 1.5;
@@ -520,6 +530,23 @@ body::before {
   font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95rem;
   color: var(--ink-muted); margin-top: 1.25rem;
 }
+.modal-divider { border: none; border-top: 1px solid var(--border-mid); margin: 1.75rem 0; }
+.modal-body-sm { font-size: 0.88rem; margin-bottom: 0.9rem; }
+.modal-signup { display: flex; gap: 0.5rem; }
+.modal-signup input[type="email"] {
+  flex: 1; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--border-mid); border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+}
+.modal-signup input[type="email"]:focus { outline: none; border-color: var(--accent); }
+.modal-signup-btn {
+  font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--ink); background: transparent;
+  border: 1.5px solid var(--ink); border-radius: 4px; padding: 0 1.1rem; cursor: pointer;
+  transition: all var(--transition); white-space: nowrap;
+}
+.modal-signup-btn:hover { background: var(--ink); color: #fff; }
+.modal-signup-note { font-size: 0.78rem; color: var(--ink-muted); margin-top: 0.6rem; min-height: 1.2em; }
 
 /* ── Album builder ── */
 .add-album {
@@ -604,17 +631,17 @@ body::before {
   <div class="hero-eyebrow">Fiat Musica · The Song Behind the Songs</div>
   <h1 class="hero-title">A song is not<br><em>a single recording.</em></h1>
   <p class="hero-body">
-    Every song here comes in several <em>triangulations</em> — true renditions of one
-    composition, each catching a different light on the same form. No one version is
-    the song; together they triangulate it. Start with one. Then walk around it.
+    Each song here is presented as a <em>triangulation</em> — several deliberately different
+    renditions of one composition, selected and sequenced because each reveals something the
+    others do not.
   </p>
-  <div class="hero-cue">Press play. Then change your angle.</div>
+  <div class="hero-cue">Follow the path, then change your angle.</div>
 </section>
 
 <div class="song-zone">
 <section class="songs-intro" id="songs">
   <div class="section-label">The Songs</div>
-  <h2>Start anywhere — then move around the song.</h2>
+  <h2>Follow the path, then change your angle.</h2>
 </section>
 
 <div class="songs-controls">
@@ -668,11 +695,20 @@ body::before {
     <div class="section-label">Say Hello</div>
     <h2 class="modal-title">Get in touch</h2>
     <p class="modal-body">
-      If a song stayed with you — or you'd like to know when new ones and the first
-      videos arrive — I'd love to hear from you. Write to me directly.
+      If a song stayed with you, I'd love to hear from you. Write to me directly.
     </p>
     <a class="modal-cta" href="mailto:jim@fiatmusica.com?subject=Hello%20from%20a%20listener">jim@fiatmusica.com</a>
     <p class="modal-fine">— James Pauli</p>
+
+    <hr class="modal-divider">
+
+    <div class="section-label">Stay Updated</div>
+    <p class="modal-body modal-body-sm">Hear when new triangulations are published.</p>
+    <form class="modal-signup" id="signup-form">
+      <input type="email" id="signup-email" placeholder="you@example.com" required>
+      <button type="submit" class="modal-signup-btn">Notify me</button>
+    </form>
+    <p class="modal-signup-note" id="signup-note"></p>
   </div>
 </div>
 
@@ -1206,15 +1242,16 @@ function renderSongs() {
             <div class="art-badge" id="artbadge-${s.id}">${s.triangulations[si].label}</div>
           </div>
 
-          <div class="tri-label">Triangulations — tap to change your angle</div>
+          <div class="tri-label">The sequence — follow the path, then change your angle</div>
           <div class="tri-row" id="tri-${s.id}">
             ${s.triangulations.map((t, pi) => `
               <button class="tri-btn" data-song="${s.id}" data-pi="${pi}"
                 style="--btn-color:${t.color}">
-                ${t.label}
+                <span class="tri-btn-num">${pi + 1}</span>${t.label}
               </button>`).join('')}
           </div>
 
+          <div class="tri-blurb-head" id="blurbhead-${s.id}">${si + 1} · ${s.triangulations[si].label}</div>
           <div class="tri-blurb" id="blurb-${s.id}">${s.triangulations[si].blurb}</div>
 
           <div class="song-progress" id="prog-${s.id}"><div class="song-progress-fill" id="progf-${s.id}"></div></div>
@@ -1251,13 +1288,18 @@ function renderSongs() {
     });
 
     const blurbEl = card.querySelector(`#blurb-${s.id}`);
+    const blurbHeadEl = card.querySelector(`#blurbhead-${s.id}`);
     card.querySelectorAll('.tri-btn').forEach(btn => {
       const pi = +btn.dataset.pi;
       btn.addEventListener('click', () => playSong(btn.dataset.song, pi));
-      btn.addEventListener('mouseenter', () => { blurbEl.textContent = s.triangulations[pi].blurb; });
+      btn.addEventListener('mouseenter', () => {
+        blurbEl.textContent = s.triangulations[pi].blurb;
+        if (blurbHeadEl) blurbHeadEl.textContent = `${pi + 1} · ${s.triangulations[pi].label}`;
+      });
       btn.addEventListener('mouseleave', () => {
         const showPi = (currentId === s.id) ? currentPi : singleIndex(s);
         blurbEl.textContent = s.triangulations[showPi].blurb;
+        if (blurbHeadEl) blurbHeadEl.textContent = `${showPi + 1} · ${s.triangulations[showPi].label}`;
       });
     });
 
@@ -1329,7 +1371,7 @@ function renderList() {
       <div class="list-title">${s.title}</div>
       <div class="list-versions">
         ${s.triangulations.map((t, pi) => `
-          <button class="list-ver-btn" data-song="${s.id}" data-pi="${pi}" style="--btn-color:${t.color}">${t.label}</button>`).join('')}
+          <button class="list-ver-btn" data-song="${s.id}" data-pi="${pi}" style="--btn-color:${t.color}">${pi + 1} · ${t.label}</button>`).join('')}
       </div>
     `;
     // main play button → plays the first rendition
@@ -1399,14 +1441,32 @@ function playSong(id, pi = 0) {
     card.querySelectorAll('.tri-btn').forEach((b, i) => b.classList.toggle('active', i === pi));
     const blurbEl = document.getElementById(`blurb-${id}`);
     if (blurbEl) blurbEl.textContent = tri.blurb;
+    const blurbHeadEl = document.getElementById(`blurbhead-${id}`);
+    if (blurbHeadEl) blurbHeadEl.textContent = `${pi + 1} · ${tri.label}`;
     drawArt(id, tri);
     const badge = document.getElementById(`artbadge-${id}`);
-    if (badge) badge.textContent = tri.label;
+    if (badge) badge.textContent = `${pi + 1} · ${tri.label}`;
   }
 
   audioEl.src = tri.file || '';
   if (tri.file) audioEl.play().catch(() => runSim()); else runSim();
   syncListPlaying();
+
+  // Preserve the active song + rendition so feedback can identify exactly
+  // what was heard — in the URL (deep-linkable) and on the Feedback nav link.
+  try {
+    const url = new URL(location.href);
+    url.searchParams.set('song', id);
+    url.searchParams.set('rendition', tri.key);
+    history.replaceState(null, '', url);
+  } catch (e) { /* URL API unavailable — non-fatal */ }
+  const feedbackLink = document.querySelector('a.nav-link[href^="feedback.html"]');
+  if (feedbackLink) {
+    const fbParams = new URLSearchParams({
+      song: id, rendition: tri.key, songTitle: song.title, renditionLabel: tri.label
+    });
+    feedbackLink.href = `feedback.html?${fbParams.toString()}`;
+  }
 }
 
 function stopAll() {
@@ -1512,6 +1572,40 @@ document.getElementById('contact-link').addEventListener('click', e => { e.preve
 document.getElementById('modal-close').addEventListener('click', () => contactModal.classList.remove('open'));
 contactModal.addEventListener('click', e => { if (e.target === contactModal) contactModal.classList.remove('open'); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') contactModal.classList.remove('open'); });
+
+// Update signup — separate from personal contact above. Uses the same Supabase project
+// as feedback.html; requires a `subscribers` table with an `email` column.
+(function () {
+  const SUPABASE_URL = 'https://mjdgziwmslgourrtwnjk.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_lq5puotc3T1LdPp3TtHnsg_BscGaoHK';
+  const form = document.getElementById('signup-form');
+  const note = document.getElementById('signup-note');
+  if (!form) return;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('signup-email').value.trim();
+    if (!email) return;
+    note.textContent = 'Saving…';
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/subscribers`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ email })
+      });
+      if (!res.ok) throw new Error(`status ${res.status}`);
+      note.textContent = "You're on the list.";
+      form.reset();
+    } catch (err) {
+      console.error('Signup failed:', err);
+      note.textContent = "Couldn't save that — try again in a moment.";
+    }
+  });
+})();
 
 // Spacebar toggles pause/play (not restart)
 document.addEventListener('keydown', e => {
